@@ -1,0 +1,11 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.text-input {
+  @apply rounded border border-gray-400 px-4 py-2 dark:bg-[#343434] dark:text-white;
+}
+
+.button {
+  @apply rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700;
+}
