@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessAuthGuard } from './auth/guards/access-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RolesGuard } from './guards/roles.guard';
 
     UsersModule,
     AuthModule,
+    EventsModule,
   ],
   controllers: [],
   providers: [

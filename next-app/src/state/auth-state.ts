@@ -12,6 +12,7 @@ export interface AuthState {
 
   getUser: () => Promise<User | null>;
   isValid: () => Promise<boolean>;
+  getAccessToken: () => Promise<string | null>;
   logout: () => void;
 }
 
@@ -36,6 +37,10 @@ export const useAuthState = create(
           console.log(e);
           return null;
         }
+      },
+      getAccessToken: async () => {
+        const isValid = await get().isValid();
+        return isValid ? get().accessToken : null;
       },
       isValid: async () => {
         const { accessToken, refreshToken } = get();

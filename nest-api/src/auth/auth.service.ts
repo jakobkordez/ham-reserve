@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserTokenData } from './interfaces/user-token-data.interface';
 import { isMongoId } from 'class-validator';
+import { LoginResponse } from './interfaces/login-response.interface';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +31,7 @@ export class AuthService {
    * @param user User to login
    * @returns Access and refresh tokens
    */
-  async login(user: UserTokenData) {
+  async login(user: UserTokenData): Promise<LoginResponse> {
     const payload: UserTokenPayload = {
       username: user.username,
       sub: user.id,
@@ -57,7 +58,7 @@ export class AuthService {
    * Sets refresh token to `null`
    * @param userId User to logout
    */
-  async logout(userId: string) {
+  async logout(userId: string): Promise<void> {
     await this.usersService.setRefreshToken(userId, null);
   }
 

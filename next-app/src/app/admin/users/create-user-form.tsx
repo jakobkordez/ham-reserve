@@ -1,0 +1,102 @@
+'use client';
+import { apiFunctions } from '@/api';
+import { useAuthState } from '@/state/auth-state';
+import { useState } from 'react';
+
+export function CreateUserForm() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+
+  const getAccessToken = useAuthState((s) => s.getAccessToken);
+
+  function submit() {
+    getAccessToken().then((accessToken) => {
+      if (!accessToken) throw new Error('No access token');
+      apiFunctions
+        .createUser(accessToken, {
+          username,
+          password,
+          name,
+          email: email || undefined,
+          phone: phone || undefined,
+        })
+        .then((res) => {
+          console.log(res);
+          setUsername('');
+          setPassword('');
+          setName('');
+          setEmail('');
+          setPhone('');
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-4 rounded border border-gray-500 p-6">
+      <div className="flex flex-col gap-1">
+        <label htmlFor="username">Uporabniško ime (klicni znak)</label>
+        <input
+          type="text"
+          id="username"
+          className="text-input"
+          placeholder="S50HQ"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="password">Geslo</label>
+        <input
+          type="password"
+          id="password"
+          className="text-input"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="name">Ime</label>
+        <input
+          type="text"
+          id="name"
+          className="text-input"
+          placeholder="Ime in priimek"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          className="text-input"
+          placeholder="s50hq@hamradio.si"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="phone">Telefon</label>
+        <input
+          type="tel"
+          id="phone"
+          className="text-input"
+          placeholder="+386 40 555 555"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </div>
+
+      <button className="button" onClick={submit}>
+        Ustvari
+      </button>
+    </div>
+  );
+}

@@ -7,5 +7,9 @@
 }
 
 .button {
-  @apply rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700;
+  @apply bg-primary rounded px-4 py-2 font-bold text-white hover:opacity-90;
+}
+
+.header-button {
+  @apply h-full p-6 leading-none hover:bg-black/10 dark:hover:bg-white/20;
 }

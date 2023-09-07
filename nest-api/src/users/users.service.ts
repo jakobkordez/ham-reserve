@@ -17,7 +17,7 @@ export class UsersService {
   }
 
   findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return this.userModel.find({ isDeleted: { $in: [false, null] } }).exec();
   }
 
   findOne(id: string): Promise<User> {
@@ -34,8 +34,10 @@ export class UsersService {
       .exec();
   }
 
-  remove(id: string): Promise<User> {
-    return this.userModel.findByIdAndDelete(id).exec();
+  setDeleted(id: string): Promise<User> {
+    return this.userModel
+      .findByIdAndUpdate(id, { $set: { isDeleted: true } }, { new: true })
+      .exec();
   }
 
   setRefreshToken(id: string, token: string): Promise<User> {

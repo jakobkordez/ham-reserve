@@ -5,6 +5,7 @@ import { RequestUser } from 'src/decorators/request-user.decorator';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth.guard';
 import { UserTokenData } from './interfaces/user-token-data.interface';
+import { LoginResponse } from './interfaces/login-response.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -13,14 +14,14 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@RequestUser() user: UserTokenData) {
+  login(@RequestUser() user: UserTokenData): Promise<LoginResponse> {
     return this.authService.login(user);
   }
 
   @Public()
   @UseGuards(RefreshAuthGuard)
   @Get('refresh')
-  refresh(@RequestUser() user: UserTokenData) {
+  refresh(@RequestUser() user: UserTokenData): Promise<LoginResponse> {
     return this.authService.login(user);
   }
 

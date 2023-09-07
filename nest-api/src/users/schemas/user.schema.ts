@@ -41,6 +41,18 @@ export class User {
     set: (value: string) => bcrypt.hashSync(value, 10),
   })
   auth: string;
+
+  @Prop({
+    required: true,
+    default: Date.now,
+  })
+  createdAt: Date;
+
+  @Prop({
+    required: true,
+    default: false,
+  })
+  isDeleted: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

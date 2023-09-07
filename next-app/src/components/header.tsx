@@ -1,17 +1,35 @@
 'use client';
 
+import { Role } from '@/enums/role.enum';
 import { User } from '@/interfaces/user.interface';
 import { useAuthState } from '@/state/auth-state';
+import { useThemeState } from '@/state/theme-state';
+import { faMoon, faSun, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export function Header() {
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const toggleTheme = useThemeState((s) => s.toggleTheme);
+
+  useEffect(() => {
+    setTheme(useThemeState.getState().theme);
+    useThemeState.subscribe((s) => setTheme(s.theme));
+  }, []);
+
   return (
-    <div className="flex h-16 select-none flex-row justify-between bg-gray-100 shadow dark:bg-[#454545]">
+    <div className="bg-primary flex h-16 select-none flex-row justify-between text-white shadow">
       <Link href="/" className="my-auto ml-4 text-2xl font-semibold">
         Ham Reserve
       </Link>
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-row">
+        <button className="header-button" onClick={toggleTheme}>
+          <FontAwesomeIcon
+            icon={theme === 'dark' ? faSun : faMoon}
+            className="w-4"
+          />
+        </button>
         <UserHeader />
       </div>
     </div>
@@ -30,24 +48,42 @@ function UserHeader() {
   return user ? (
     <div className="relative h-full">
       <button
-        className="flex h-full items-center p-6 hover:bg-white/20"
+        className="header-button flex items-center"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div>{user.username.toUpperCase()}</div>
+        <FontAwesomeIcon icon={faUserCircle} className="mr-2 h-5" />
+        <span>{user.username.toUpperCase()}</span>
       </button>
-      {isOpen && (
-        <div className="absolute right-0 z-10 mt-2 w-56 rounded-md border-gray-500 bg-white/20 py-2 shadow-md">
+      <div
+        className={`absolute right-2 z-10 mt-2 ${
+          isOpen ? '' : 'scale-0 delay-100'
+        }`}
+      >
+        <div
+          className={`w-56 origin-top-right rounded-md bg-[#f8f8f8] py-2 text-black shadow-sm ring-1 ring-inset ring-gray-300 duration-100 dark:bg-[#454545] dark:text-white dark:ring-gray-500 ${
+            isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+          }`}
+        >
+          {user.roles.includes(Role.Admin) && (
+            <Link
+              href="/admin"
+              className="block px-4 py-2 text-left text-red-500 hover:bg-black/5 dark:hover:bg-white/10"
+              onClick={() => setIsOpen(false)}
+            >
+              Admin panel
+            </Link>
+          )}
           <button
             onClick={() => {
               logout();
               window.location.reload();
             }}
-            className="w-full px-4 py-2 text-left hover:bg-white/10"
+            className="block w-full px-4 py-2 text-left hover:bg-black/5 dark:hover:bg-white/10"
           >
             Odjava
           </button>
         </div>
-      )}
+      </div>
     </div>
   ) : (
     <div className="relative h-full">
