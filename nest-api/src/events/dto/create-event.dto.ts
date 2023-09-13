@@ -1,17 +1,31 @@
-import { IsDate, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsOptional,
+  IsString,
+  IsUppercase,
+  Matches,
+} from 'class-validator';
 
 export class CreateEventDto {
   @IsString()
-  @MinLength(3)
+  @IsUppercase()
+  @Matches(/^[A-Z\d]+\d+[A-Z]+$/, { message: 'Invalid callsign' })
   callsign: string;
 
   @IsString()
   @IsOptional()
   description: string;
 
-  @IsDate()
+  @IsDateString()
+  @IsOptional()
   fromDateTime: Date;
 
-  @IsDate()
+  @IsDateString()
+  @IsOptional()
   toDateTime: Date;
+
+  @IsBoolean()
+  @IsOptional()
+  isPrivate: boolean;
 }

@@ -17,15 +17,21 @@ export class UsersService {
   }
 
   findAll(): Promise<User[]> {
-    return this.userModel.find({ isDeleted: { $in: [false, null] } }).exec();
+    return this.userModel.find({ $nor: [{ isDeleted: true }] }).exec();
   }
 
   findOne(id: string): Promise<User> {
     return this.userModel.findById(id).exec();
   }
 
+  findMany(ids: string[]): Promise<User[]> {
+    return this.userModel.find({ _id: ids }).exec();
+  }
+
   findByUsername(username: string): Promise<User> {
-    return this.userModel.findOne({ username }).exec();
+    return this.userModel
+      .findOne({ username, $nor: [{ isDeleted: true }] })
+      .exec();
   }
 
   update(id: string, updateUserDto: UpdateUserDto): Promise<User> {

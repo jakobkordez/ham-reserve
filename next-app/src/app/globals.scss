@@ -1,15 +1,20 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-
 .text-input {
-  @apply rounded border border-gray-400 px-4 py-2 dark:bg-[#343434] dark:text-white;
+  @apply rounded border border-gray-400 px-4 py-2 dark:bg-gray-700 dark:text-white;
 }
 
 .button {
-  @apply bg-primary rounded px-4 py-2 font-bold text-white hover:opacity-90;
+  @apply rounded bg-primary px-4 py-2 font-bold text-white hover:opacity-90;
 }
 
 .header-button {
   @apply h-full p-6 leading-none hover:bg-black/10 dark:hover:bg-white/20;
 }
+
+.font-callsign {
+  font-family: var(--callsign-font);
+  text-transform: uppercase;
+}
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';

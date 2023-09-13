@@ -1,36 +1,13 @@
+import { CurrentEvents } from '@/components/current-events';
+import { PrivateEvents } from '@/components/private-events';
 import React from 'react';
-
-const znaki = [
-  {
-    znak: 'S50YOTA',
-    od: '1. 12. 2023',
-    do: '31. 12. 2023',
-  },
-];
 
 export default function Home() {
   return (
     <div className="container flex flex-col gap-10 py-8">
-      <div>
-        <h2 className="mb-4 text-2xl">Trenutni znaki</h2>
+      <CurrentEvents />
 
-        <div className="grid grid-cols-4">
-          {znaki.map((znak, i) => (
-            <div
-              key={i}
-              className="rounded-lg bg-[#f5f5f5] px-6 py-4 shadow-md dark:bg-white/5"
-            >
-              <div className="mb-2 font-mono text-2xl font-medium">
-                {znak.znak}
-              </div>
-              <div className="text-sm">
-                <div>Od: {znak.od}</div>
-                <div>Do: {znak.do}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <PrivateEvents />
 
       <div className="flex flex-col gap-4">
         <h2 className="text-2xl">Kako do rezervacije?</h2>
@@ -69,7 +46,7 @@ interface TileProps {
 
 function Tile({ title, children, image }: TileProps) {
   return (
-    <div className="rounded-lg bg-[#f5f5f5] p-6 shadow-md dark:bg-white/5">
+    <div className="rounded-lg bg-gray-100 p-6 shadow-md dark:bg-white/5">
       <div className="mb-2 text-xl font-medium">{title}</div>
       <div>{children}</div>
     </div>

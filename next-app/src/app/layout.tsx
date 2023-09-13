@@ -1,6 +1,6 @@
 import './globals.scss';
 import type { Metadata } from 'next';
-import { LayoutComponent } from './layout_component';
+import { LayoutComponent } from './layout-component';
 
 export const metadata: Metadata = {
   title: {

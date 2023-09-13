@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   NotFoundException,
+  BadRequestException,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,7 +26,12 @@ export class UsersController {
 
   @Roles(Role.Admin)
   @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    const exitsting = await this.usersService.findByUsername(
+      createUserDto.username,
+    );
+    if (exitsting) throw new BadRequestException('Username taken');
+
     return this.usersService.create(createUserDto);
   }
 
@@ -41,6 +48,7 @@ export class UsersController {
     return user;
   }
 
+  @Roles(Role.Admin)
   @Get('search/:username')
   findByUsername(@Param('username') username: string): Promise<User> {
     const user = this.usersService.findByUsername(username);
@@ -48,9 +56,16 @@ export class UsersController {
     return user;
   }
 
+  @Roles(Role.Admin)
   @Get(':id')
   findOne(@Param('id', MongoIdPipe) id: string): Promise<User> {
     return this.usersService.findOne(id);
+  }
+
+  @Roles(Role.Admin)
+  @Post('many')
+  findMany(@Body(ParseArrayPipe) ids: string[]): Promise<User[]> {
+    return this.usersService.findMany(ids);
   }
 
   @Roles(Role.Admin)

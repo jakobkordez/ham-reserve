@@ -18,42 +18,44 @@ export default function Login() {
     });
   }, []);
 
+  async function login() {
+    try {
+      const res = await apiFunctions.login(username.toUpperCase(), password);
+      useAuthState.setState(res.data);
+      router.replace('/');
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   return (
-    <div className="mx-auto my-10 flex max-w-2xl flex-col gap-4 rounded-xl bg-gray-100 p-10 dark:bg-[#454545]">
-      <h1 className="text-2xl font-bold">Prijava</h1>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="username">Uporabniško ime</label>
-        <input
-          id="username"
-          type="username"
-          className="text-input"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+    <div className="container py-10">
+      <div className="mx-auto flex max-w-2xl flex-col gap-4 rounded-xl bg-gray-100 p-10 shadow-lg dark:bg-gray-800">
+        <h1 className="text-2xl font-bold">Prijava</h1>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="username">Uporabniško ime</label>
+          <input
+            id="username"
+            type="username"
+            className="text-input font-callsign"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="password">Geslo</label>
+          <input
+            id="password"
+            type="password"
+            className="text-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <button className="button" onClick={() => login()}>
+          Prijava
+        </button>
       </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="password">Geslo</label>
-        <input
-          id="password"
-          type="password"
-          className="text-input"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <button className="button" onClick={() => login(username, password)}>
-        Prijava
-      </button>
     </div>
   );
 }
-
-const login = async (username: string, password: string) => {
-  try {
-    const res = (await apiFunctions.login(username, password)).data;
-    useAuthState.setState(res);
-    window.location.href = '/';
-  } catch (e) {
-    console.log(e);
-  }
-};

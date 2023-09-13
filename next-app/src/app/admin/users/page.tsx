@@ -1,22 +1,22 @@
 'use client';
 
-import { useAuthState } from '@/state/auth-state';
-import NoSSR from 'react-no-ssr';
-import { CreateUserForm } from './create-user-form';
+import Link from 'next/link';
 import { UsersList } from './users-list';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAdd } from '@fortawesome/free-solid-svg-icons';
 
 export default function AdminUsers() {
   return (
-    <>
-      <h2 className="text-2xl font-medium">Create user</h2>
+    <div>
+      <div className="mb-4 flex items-center">
+        <h2 className="flex-1 text-2xl font-medium">Users</h2>
 
-      <CreateUserForm />
+        <Link href="/admin/users/create">
+          <FontAwesomeIcon icon={faAdd} className="text-2xl" />
+        </Link>
+      </div>
 
-      <h2 className="text-2xl font-medium">Users</h2>
-
-      <NoSSR>
-        <UsersList />
-      </NoSSR>
-    </>
+      <UsersList />
+    </div>
   );
 }

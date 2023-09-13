@@ -19,7 +19,7 @@ export function Header() {
   }, []);
 
   return (
-    <div className="bg-primary flex h-16 select-none flex-row justify-between text-white shadow">
+    <div className="flex h-16 select-none flex-row justify-between bg-primary text-white shadow">
       <Link href="/" className="my-auto ml-4 text-2xl font-semibold">
         Ham Reserve
       </Link>
@@ -60,7 +60,7 @@ function UserHeader() {
         }`}
       >
         <div
-          className={`w-56 origin-top-right rounded-md bg-[#f8f8f8] py-2 text-black shadow-sm ring-1 ring-inset ring-gray-300 duration-100 dark:bg-[#454545] dark:text-white dark:ring-gray-500 ${
+          className={`w-56 origin-top-right rounded-md bg-gray-100 py-2 text-black shadow-sm ring-1 ring-inset ring-primary duration-100 dark:bg-gray-700 dark:text-white ${
             isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
           }`}
         >

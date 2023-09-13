@@ -1,22 +1,22 @@
 'use client';
 
-import { apiFunctions } from '@/api';
 import { User } from '@/interfaces/user.interface';
-import { useAuthState } from '@/state/auth-state';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useRef } from 'react';
+import { Dialog } from '@headlessui/react';
+import { useRef } from 'react';
+
+interface DeleteUserDialogProps {
+  user: User | undefined;
+  onCancel: () => void;
+  onConfirm: () => void;
+}
 
 export function DeleteUserDialog({
   user,
   onCancel,
-}: {
-  user: User | undefined;
-  onCancel: () => void;
-}) {
-  const getAccessToken = useAuthState((s) => s.getAccessToken);
-
+  onConfirm,
+}: DeleteUserDialogProps) {
   const cancelButtonRef = useRef(null);
 
   return (
@@ -62,12 +62,7 @@ export function DeleteUserDialog({
               <button
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                onClick={async () => {
-                  const token = await getAccessToken();
-                  if (!token) return;
-                  apiFunctions.deleteUser(token, user!._id);
-                  onCancel();
-                }}
+                onClick={onConfirm}
               >
                 Deactivate
               </button>

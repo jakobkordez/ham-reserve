@@ -2,8 +2,14 @@
 
 import { Header } from '@/components/header';
 import { useThemeState } from '@/state/theme-state';
-import { Inter } from 'next/font/google';
+import { Allerta, Inter } from 'next/font/google';
 import { useEffect, useState } from 'react';
+
+const callsignFont = Allerta({
+  subsets: ['latin'],
+  variable: '--callsign-font',
+  weight: '400',
+});
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,9 +22,9 @@ export function LayoutComponent({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <html lang="en" className={theme}>
+    <html lang="sl" className={theme}>
       <body
-        className={`${inter.className} dark:bg-[#121212] dark:text-[#d6d6d6]`}
+        className={`${inter.className} ${callsignFont.variable} dark:text-light dark:bg-gray-900 dark:[color-scheme:dark]`}
       >
         <Header />
         <main>{children}</main>

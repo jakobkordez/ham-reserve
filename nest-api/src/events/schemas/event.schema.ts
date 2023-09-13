@@ -20,6 +20,11 @@ export class Event {
   toDateTime: Date;
 
   @Prop({
+    default: false,
+  })
+  isPrivate: boolean;
+
+  @Prop({
     type: [{ type: String, ref: User.name }],
     default: [],
   })

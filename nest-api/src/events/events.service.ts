@@ -24,18 +24,59 @@ export class EventsService {
     const now = new Date();
     return this.eventModel
       .find({
-        $and: [{ fromDateTime: { $lte: now } }, { toDateTime: { $gte: now } }],
+        $and: [
+          {
+            $or: [{ fromDateTime: [null] }, { fromDateTime: { $lte: now } }],
+          },
+          {
+            $or: [{ toDateTime: [null] }, { toDateTime: { $gte: now } }],
+          },
+        ],
+        $nor: [{ isDeleted: true }, { isPrivate: true }],
       })
       .exec();
   }
 
-  findOne(id: string): Promise<Event> {
-    return this.eventModel.findById(id).exec();
+  findPrivate(userId: string): Promise<Event[]> {
+    const now = new Date();
+    return this.eventModel
+      .find({
+        $and: [
+          {
+            $or: [{ fromDateTime: [null] }, { fromDateTime: { $lte: now } }],
+          },
+          {
+            $or: [{ toDateTime: [null] }, { toDateTime: { $gte: now } }],
+          },
+        ],
+        $nor: [{ isDeleted: true }],
+        isPrivate: true,
+        access: userId,
+      })
+      .exec();
+  }
+
+  findOne(id: string, populate: boolean): Promise<Event> {
+    let q = this.eventModel.findById(id);
+    if (populate) q = q.populate('access');
+    return q.exec();
   }
 
   update(id: string, updateEventDto: UpdateEventDto): Promise<Event> {
     return this.eventModel
       .findByIdAndUpdate(id, updateEventDto, { new: true })
+      .exec();
+  }
+
+  grantAccess(id: string, userId: string): Promise<Event> {
+    return this.eventModel
+      .findByIdAndUpdate(id, { $addToSet: { access: userId } }, { new: true })
+      .exec();
+  }
+
+  revokeAccess(id: string, userId: string): Promise<Event> {
+    return this.eventModel
+      .findByIdAndUpdate(id, { $pull: { access: userId } }, { new: true })
       .exec();
   }
 

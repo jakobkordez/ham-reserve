@@ -3,12 +3,15 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsString,
+  IsUppercase,
+  Matches,
   MinLength,
 } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
-  @MinLength(3)
+  @IsUppercase()
+  @Matches(/^[A-Z\d]+\d+[A-Z]+$/, { message: 'Invalid callsign' })
   username: string;
 
   @IsString()

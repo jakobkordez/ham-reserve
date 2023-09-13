@@ -42,7 +42,7 @@ export default function AdminPageLayout({
               key={href}
               href={href}
               className={`rounded-md border border-gray-300 px-5 py-2 font-medium shadow dark:border-gray-600 ${
-                href === pathname
+                pathname.startsWith(href)
                   ? 'bg-black/10 dark:bg-white/20'
                   : 'bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20'
               }`}

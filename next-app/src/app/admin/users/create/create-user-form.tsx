@@ -1,23 +1,34 @@
 'use client';
+
 import { apiFunctions } from '@/api';
 import { useAuthState } from '@/state/auth-state';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export function CreateUserForm() {
+  const router = useRouter();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [error, setError] = useState<string>();
 
   const getAccessToken = useAuthState((s) => s.getAccessToken);
 
   function submit() {
+    setError(undefined);
     getAccessToken().then((accessToken) => {
-      if (!accessToken) throw new Error('No access token');
+      if (!accessToken) {
+        setError('Session expired');
+        throw new Error('No access token');
+      }
       apiFunctions
         .createUser(accessToken, {
-          username,
+          username: username.toUpperCase(),
           password,
           name,
           email: email || undefined,
@@ -25,14 +36,13 @@ export function CreateUserForm() {
         })
         .then((res) => {
           console.log(res);
-          setUsername('');
-          setPassword('');
-          setName('');
-          setEmail('');
-          setPhone('');
+          router.push('/admin/users');
         })
         .catch((err) => {
           console.error(err);
+          const msg = err.response.data.message;
+          if (msg instanceof Array) setError(msg.join(', '));
+          else setError(msg);
         });
     });
   }
@@ -44,7 +54,7 @@ export function CreateUserForm() {
         <input
           type="text"
           id="username"
-          className="text-input"
+          className="text-input font-callsign"
           placeholder="S50HQ"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -93,6 +103,16 @@ export function CreateUserForm() {
           onChange={(e) => setPhone(e.target.value)}
         />
       </div>
+
+      {error && (
+        <div className="flex flex-row items-center gap-4 rounded border border-red-500 bg-red-500/10 p-4 text-red-600">
+          <FontAwesomeIcon
+            icon={faTriangleExclamation}
+            className="h-6 w-6 text-red-500"
+          />
+          <span>{error[0].toUpperCase() + error.slice(1)}</span>
+        </div>
+      )}
 
       <button className="button" onClick={submit}>
         Ustvari
