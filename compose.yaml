@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # mongo:
+  #   image: mongo
+  #   expose:
+  #     - '27017:27017'
+  #   volumes:
+  #     - ~/mongo/data:/data/db
+  api:
+    build: ./nest-api
+    ports:
+      - '3001:3001'
+    env_file: .env.production.local
+    # environment:
+    #   MONGODB_URI: mongodb://mongo:27017/ham-reserve
+    # depends_on:
+    #   - mongo
+  frontend:
+    build:
+      context: ./next-app
+      args:
+        API_BASE_URL: http://api:3001
+    ports:
+      - '3000:3000'

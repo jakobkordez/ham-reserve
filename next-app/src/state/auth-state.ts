@@ -47,14 +47,12 @@ export const useAuthState = create(
 
         if (accessToken) {
           const { exp } = jwtDecode(accessToken) as { exp: number };
-          console.log('Access token exp', exp);
           if (Date.now() < exp * 1000) return true;
           else set({ accessToken: null });
         }
 
         if (refreshToken) {
           const { exp } = jwtDecode(refreshToken) as { exp: number };
-          console.log('Refresh token exp', exp);
           if (Date.now() < exp * 1000) {
             // Try to refresh
             try {
