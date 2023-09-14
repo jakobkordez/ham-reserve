@@ -24,7 +24,7 @@ export function LayoutComponent({ children }: { children: React.ReactNode }) {
   return (
     <html lang="sl" className={theme}>
       <body
-        className={`${inter.className} ${callsignFont.variable} dark:text-light dark:bg-gray-900 dark:[color-scheme:dark]`}
+        className={`${inter.className} ${callsignFont.variable} dark:bg-gray-900 dark:text-light dark:[color-scheme:dark]`}
       >
         <Header />
         <main>{children}</main>

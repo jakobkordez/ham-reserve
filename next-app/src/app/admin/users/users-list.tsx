@@ -19,23 +19,18 @@ export function UsersList() {
   const [me, setMe] = useState<User>();
   const [deleteUser, setDeleteUser] = useState<User>();
 
-  async function getUsers() {
-    setUsers(undefined);
-    const accessToken = await getAccessToken();
-    if (!accessToken) return;
-
-    const users = (await apiFunctions.getAllUsers(accessToken)).data;
-
-    const me = await getMe();
-    if (!me) return;
-
-    setUsers(users);
-    setMe(me);
-  }
-
   useEffect(() => {
-    getUsers();
-  }, []);
+    getAccessToken().then(async (token) => {
+      if (!token) return;
+      const users = await apiFunctions.getAllUsers(token);
+
+      const me = await getMe();
+      if (!me) return;
+
+      setUsers(users.data);
+      setMe(me);
+    });
+  }, [getAccessToken, getMe]);
 
   if (!users || !me) return <div>Loading...</div>;
 
@@ -96,7 +91,7 @@ export function UsersList() {
           if (!token) return;
           apiFunctions.deleteUser(token, deleteUser!._id);
           setDeleteUser(undefined);
-          getUsers();
+          window.location.reload();
         }}
       />
     </>

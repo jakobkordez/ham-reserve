@@ -24,7 +24,7 @@ export default function AdminEventPage({ params: { id } }: EventPageProps) {
         console.log(e);
         setEvent(null);
       });
-  }, []);
+  }, [id]);
 
   return (
     <>

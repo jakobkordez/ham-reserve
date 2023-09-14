@@ -16,7 +16,7 @@ export function EventsList() {
       if (!token) return;
       apiFunctions.getAllEvents(token).then((res) => setEvents(res.data));
     });
-  }, []);
+  }, [getAccessToken]);
 
   return (
     <div className="flex flex-col">

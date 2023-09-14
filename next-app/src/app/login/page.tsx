@@ -2,7 +2,6 @@
 
 import { apiFunctions } from '@/api';
 import { useAuthState } from '@/state/auth-state';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function Login() {
@@ -10,19 +9,18 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   const isValid = useAuthState((s) => s.isValid);
-  const router = useRouter();
 
   useEffect(() => {
     isValid().then((r) => {
-      if (r) router.replace('/');
+      if (r) window.location.replace('/');
     });
-  }, []);
+  }, [isValid]);
 
   async function login() {
     try {
       const res = await apiFunctions.login(username.toUpperCase(), password);
       useAuthState.setState(res.data);
-      router.replace('/');
+      window.location.replace('/');
     } catch (e) {
       console.log(e);
     }

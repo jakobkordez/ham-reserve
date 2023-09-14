@@ -16,7 +16,7 @@ export function PrivateEvents() {
       if (!token) return;
       apiFunctions.getPrivateEvents(token).then((res) => setEvents(res.data));
     });
-  }, []);
+  }, [getAccessToken]);
 
   if ((events?.length ?? 0) === 0) return <></>;
 

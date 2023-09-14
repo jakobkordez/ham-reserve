@@ -14,5 +14,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <LayoutComponent children={children} />;
+  return <LayoutComponent>{children}</LayoutComponent>;
 }

@@ -19,7 +19,7 @@ export function EventComponent({ event }: EventComponentProps) {
 
   useEffect(() => {
     isValid().then(setIsAuth);
-  }, []);
+  }, [isValid]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -74,7 +74,7 @@ export function EventComponent({ event }: EventComponentProps) {
 
           <tbody>
             {bands.map((band) => (
-              <tr>
+              <tr key={band}>
                 <th key={band} className="px-3">
                   {band}
                 </th>

@@ -43,7 +43,7 @@ function UserHeader() {
 
   useEffect(() => {
     getUser().then((u) => setUser(u || undefined));
-  }, []);
+  }, [getUser]);
 
   return user ? (
     <div className="relative h-full">

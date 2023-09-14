@@ -71,7 +71,7 @@ function AccessComponent({ event }: EventComponentProps) {
         setUsers(res.data);
       });
     });
-  }, []);
+  }, [getAccessToken, event.access]);
 
   async function grantAccess() {
     const token = await getAccessToken();
@@ -129,7 +129,13 @@ function AccessComponent({ event }: EventComponentProps) {
   );
 }
 
-function Button({ children, onClick }: any) {
+function Button({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
   return (
     <button
       className="h-10 w-10 rounded-full bg-gray-800 hover:bg-gray-700"

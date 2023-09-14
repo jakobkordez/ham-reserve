@@ -29,7 +29,7 @@ export default function AdminPageLayout({
     getUser().then((u) => {
       if (!u || !u.roles.includes(Role.Admin)) window.location.replace('/');
     });
-  }, []);
+  }, [getUser]);
 
   return (
     <>

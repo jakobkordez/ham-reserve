@@ -74,19 +74,16 @@ export const useAuthState = create(
     }),
     {
       name: 'auth-storage',
+      storage: {
+        getItem: (key) => {
+          const value = secureLocalStorage.getItem(key) as string;
+          return value ? JSON.parse(value) : null;
+        },
+        setItem: (key, value) => {
+          secureLocalStorage.setItem(key, JSON.stringify(value));
+        },
+        removeItem: secureLocalStorage.removeItem,
+      },
     },
-    // {
-    //   name: 'auth-storage',
-    //   storage: {
-    //     getItem: (key) => {
-    //       const value = secureLocalStorage.getItem(key) as string;
-    //       return value ? JSON.parse(value) : null;
-    //     },
-    //     setItem: (key, value) => {
-    //       secureLocalStorage.setItem(key, JSON.stringify(value));
-    //     },
-    //     removeItem: secureLocalStorage.removeItem,
-    //   },
-    // },
   ),
 );

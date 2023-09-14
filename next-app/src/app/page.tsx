@@ -9,7 +9,7 @@ export default function Home() {
 
       <PrivateEvents />
 
-      <div className="flex flex-col gap-4">
+      {/* <div className="flex flex-col gap-4">
         <h2 className="text-2xl">Kako do rezervacije?</h2>
         <Tile title="1. Ustvari račun">
           <p>Registriraj se s klicnim znakom</p>
@@ -33,22 +33,22 @@ export default function Home() {
             času (v UTC), frekvenci (ali samo frekvenčnem pasu), načinu dela.
           </p>
         </Tile>
-      </div>
+      </div> */}
     </div>
   );
 }
 
-interface TileProps {
-  title: string;
-  children: React.ReactNode;
-  image?: string;
-}
+// interface TileProps {
+//   title: string;
+//   children: React.ReactNode;
+//   image?: string;
+// }
 
-function Tile({ title, children, image }: TileProps) {
-  return (
-    <div className="rounded-lg bg-gray-100 p-6 shadow-md dark:bg-white/5">
-      <div className="mb-2 text-xl font-medium">{title}</div>
-      <div>{children}</div>
-    </div>
-  );
-}
+// function Tile({ title, children, image }: TileProps) {
+//   return (
+//     <div className="rounded-lg bg-gray-100 p-6 shadow-md dark:bg-white/5">
+//       <div className="mb-2 text-xl font-medium">{title}</div>
+//       <div>{children}</div>
+//     </div>
+//   );
+// }

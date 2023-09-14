@@ -25,7 +25,7 @@ export default function EventPage({ params: { id } }: EventPageProps) {
         console.log(e);
         setEvent(null);
       });
-  }, []);
+  }, [id]);
 
   return (
     <div className="container py-8">
