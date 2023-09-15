@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { User } from 'src/users/schemas/user.schema';
 
 export type EventDocument = Event & Document;
@@ -25,10 +26,10 @@ export class Event {
   isPrivate: boolean;
 
   @Prop({
-    type: [{ type: String, ref: User.name }],
+    type: [{ type: Types.ObjectId, ref: User.name }],
     default: [],
   })
-  access: User[];
+  access: User[] | string[];
 
   @Prop({
     required: true,

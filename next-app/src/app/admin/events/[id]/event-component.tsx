@@ -76,7 +76,10 @@ function AccessComponent({ event }: EventComponentProps) {
   async function grantAccess() {
     const token = await getAccessToken();
     if (!token) return;
-    const user = await apiFunctions.findByUsername(token, usernameInput);
+    const user = await apiFunctions.findByUsername(
+      token,
+      usernameInput.toUpperCase(),
+    );
     if (!user.data) return;
     try {
       await apiFunctions.grantEventAccess(token, event._id, user.data._id);
@@ -112,6 +115,7 @@ function AccessComponent({ event }: EventComponentProps) {
         <Button onClick={grantAccess}>
           <FontAwesomeIcon icon={faPlus} />
         </Button>
+        {/* TODO Error */}
       </div>
 
       {users?.map((user, i) => (

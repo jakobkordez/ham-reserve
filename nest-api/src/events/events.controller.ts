@@ -18,10 +18,16 @@ import { Role } from 'src/enums/role.enum';
 import { Public } from 'src/decorators/public.decorator';
 import { RequestUser } from 'src/decorators/request-user.decorator';
 import { UserTokenData } from 'src/auth/interfaces/user-token-data.interface';
+import { ReservationsService } from 'src/reservations/reservations.service';
+import { CreateReservationDto } from 'src/reservations/dto/create-reservation.dto';
+import { Reservation } from 'src/reservations/schemas/reservation.schema';
 
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    private readonly eventsService: EventsService,
+    private readonly reservationsService: ReservationsService,
+  ) {}
 
   @Roles(Role.Admin)
   @Post()
@@ -88,5 +94,57 @@ export class EventsController {
   @Delete(':id')
   remove(@Param('id', MongoIdPipe) id: string): Promise<Event> {
     return this.eventsService.setDeleted(id);
+  }
+
+  @Post(':id/reservations')
+  async reserve(
+    @RequestUser() user: UserTokenData,
+    @Param('id', MongoIdPipe) eventId: string,
+    @Body() createReservationDto: CreateReservationDto,
+  ): Promise<Reservation> {
+    const event = await this.eventsService.findOne(eventId, false);
+    if (!event) throw new BadRequestException('Event not found');
+    if (!(event.access as string[]).includes(user.id))
+      throw new BadRequestException('Access not granted');
+
+    const errors = [];
+
+    const forDate = new Date(createReservationDto.forDate);
+
+    if (event.fromDateTime && forDate < event.fromDateTime)
+      errors.push(`Event starts at ${event.fromDateTime.toISOString()}`);
+    if (event.toDateTime && forDate > event.toDateTime)
+      errors.push(`Event ends at ${event.toDateTime.toISOString()}`);
+
+    const reservations = await this.reservationsService.findAll({
+      eventId,
+      fromDate: forDate,
+      toDate: forDate,
+    });
+
+    const bandSet = new Set(createReservationDto.bands);
+    for (const r of reservations) {
+      for (const b of r.bands) {
+        if (bandSet.has(b)) {
+          errors.push(`Band ${b} is already reserved for ${forDate}`);
+        }
+      }
+    }
+
+    if (errors.length > 0) throw new BadRequestException(errors);
+
+    return this.reservationsService.create(
+      createReservationDto,
+      eventId,
+      user.id,
+    );
+  }
+
+  @Public()
+  @Get(':id/reservations')
+  findReservations(
+    @Param('id', MongoIdPipe) eventId: string,
+  ): Promise<Reservation[]> {
+    return this.reservationsService.findAll({ eventId });
   }
 }

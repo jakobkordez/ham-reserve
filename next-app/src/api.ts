@@ -3,6 +3,8 @@ import { User } from './interfaces/user.interface';
 import { CreateUserDto } from './interfaces/create-user-dto.interface';
 import { Event } from './interfaces/event.interface';
 import { CreateEventDto } from './interfaces/create-event-dto.interface';
+import { Reservation } from './interfaces/reservation.interface';
+import { CreateReservationDto } from './interfaces/create-reservation-dto';
 
 const baseURL = '/api';
 
@@ -124,6 +126,51 @@ export const apiFunctions = {
   },
   deleteEvent: async (accessToken: string, id: string) => {
     return await api.delete<Event>(`/events/${id}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+  },
+
+  // Reservations
+  getReservation: async (accessToken: string, id: string) => {
+    return await api.get<Reservation>(`/reservations/${id}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+  },
+  updateReservation: async (
+    accessToken: string,
+    id: string,
+    reservation: Reservation,
+  ) => {
+    return await api.patch<Reservation>(`/reservations/${id}`, reservation, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+  },
+  deleteReservation: async (accessToken: string, id: string) => {
+    return await api.delete<Reservation>(`/reservations/${id}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+  },
+  createReservation: async (
+    accessToken: string,
+    eventId: string,
+    reservation: CreateReservationDto,
+  ) => {
+    return await api.post<Reservation>(
+      `/events/${eventId}/reservations`,
+      reservation,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+    );
+  },
+  getReservationsForEvent: async (eventId: string) => {
+    return await api.get<Reservation[]>(`/events/${eventId}/reservations`);
+  },
+  getReservationsForSelf: async (accessToken: string) => {
+    return await api.get<Reservation[]>('/users/me/reservations', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+  },
+  getReservationsForUser: async (accessToken: string, userId: string) => {
+    return await api.get<Reservation[]>(`/users/${userId}/reservations`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
   },

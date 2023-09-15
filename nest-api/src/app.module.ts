@@ -7,6 +7,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AccessAuthGuard } from './auth/guards/access-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { EventsModule } from './events/events.module';
+import { ReservationsModule } from './reservations/reservations.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { EventsModule } from './events/events.module';
     UsersModule,
     AuthModule,
     EventsModule,
+    ReservationsModule,
   ],
   controllers: [],
   providers: [
