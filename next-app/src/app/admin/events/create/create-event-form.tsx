@@ -69,7 +69,7 @@ export function CreateEventForm() {
           onChange={(e) => setDescription(e.target.value)}
         />
       </div>
-      <div className="flex flex-row gap-4">
+      <div className="flex gap-4">
         <div className="flex flex-1 flex-col gap-1">
           <label htmlFor="fromDateTime">Od</label>
           <input
@@ -103,7 +103,7 @@ export function CreateEventForm() {
           />
         </div>
       </div>
-      <div className="flex flex-row items-center gap-4 text-lg">
+      <div className="flex items-center gap-4 text-lg">
         <input
           type="checkbox"
           id="isPrivate"
@@ -115,7 +115,7 @@ export function CreateEventForm() {
       </div>
 
       {error && (
-        <div className="flex flex-row items-center gap-4 rounded border border-red-500 bg-red-500/10 p-4 text-red-600">
+        <div className="flex items-center gap-4 rounded border border-red-500 bg-red-500/10 p-4 text-red-600">
           <FontAwesomeIcon
             icon={faTriangleExclamation}
             className="h-6 w-6 text-red-500"

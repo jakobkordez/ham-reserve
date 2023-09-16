@@ -24,7 +24,7 @@ export function EventsList() {
         <Link
           key={event._id}
           href={`/admin/events/${event._id}`}
-          className="flex flex-row border-b border-gray-500 px-4 py-3 align-middle transition last:border-none hover:bg-gray-500/10"
+          className="flex border-b border-gray-500 px-4 py-3 align-middle transition last:border-none hover:bg-gray-500/10"
         >
           <div className="flex flex-1 items-center gap-3">
             <div className="font-callsign text-2xl font-medium">

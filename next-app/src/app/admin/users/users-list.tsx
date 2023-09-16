@@ -40,7 +40,7 @@ export function UsersList() {
         {users.map((user: User) => (
           <div
             key={user._id}
-            className="flex flex-row border-b border-b-gray-500 px-4 py-2 last:border-b-0"
+            className="flex border-b border-b-gray-500 px-4 py-2 last:border-b-0"
           >
             <div className="my-auto flex-1">
               <div className="text-xl">

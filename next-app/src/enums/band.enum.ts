@@ -1,7 +1,6 @@
 export enum Band {
   b160m = '160m',
   b80m = '80m',
-  b60m = '60m',
   b40m = '40m',
   b30m = '30m',
   b20m = '20m',
@@ -12,5 +11,17 @@ export enum Band {
   b6m = '6m',
   b4m = '4m',
   b2m = '2m',
-  b70cm = '70cm',
 }
+
+export const hfBands = [
+  Band.b160m,
+  Band.b80m,
+  Band.b40m,
+  Band.b20m,
+  Band.b15m,
+  Band.b10m,
+];
+
+export const warcBands = [Band.b30m, Band.b17m, Band.b12m];
+
+export const vhfBands = [Band.b6m, Band.b4m, Band.b2m];

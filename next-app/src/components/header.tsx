@@ -19,11 +19,11 @@ export function Header() {
   }, []);
 
   return (
-    <div className="flex h-16 select-none flex-row justify-between bg-primary text-white shadow">
+    <div className="flex h-16 select-none justify-between bg-primary text-white shadow">
       <Link href="/" className="my-auto ml-4 text-2xl font-semibold">
         Ham Reserve
       </Link>
-      <div className="flex flex-row">
+      <div className="flex">
         <button className="header-button" onClick={toggleTheme}>
           <FontAwesomeIcon
             icon={theme === 'dark' ? faSun : faMoon}
@@ -64,6 +64,12 @@ function UserHeader() {
             isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
           }`}
         >
+          <Link
+            href="/profile"
+            className="block w-full px-4 py-2 text-left hover:bg-black/5 dark:hover:bg-white/10"
+          >
+            Profil
+          </Link>
           {user.roles.includes(Role.Admin) && (
             <Link
               href="/admin"

@@ -126,7 +126,9 @@ export class EventsController {
     for (const r of reservations) {
       for (const b of r.bands) {
         if (bandSet.has(b)) {
-          errors.push(`Band ${b} is already reserved for ${forDate}`);
+          errors.push(
+            `Band ${b} is already reserved for ${forDate.toISOString()}`,
+          );
         }
       }
     }

@@ -19,7 +19,12 @@ export function FreeDatesComponent({ event }: { event: Event }) {
   const bands = Object.values(Band).map((val) => val.toString());
   const dates = new Array(7)
     .fill(null)
-    .map((_, i) => new Date((Date.now() / dayInMs) * dayInMs + i * dayInMs));
+    .map((_, i) => new Date(Math.floor(Date.now() / dayInMs + i) * dayInMs))
+    .filter(
+      (date) =>
+        (!event.fromDateTime || date >= event.fromDateTime) &&
+        (!event.toDateTime || date <= event.toDateTime),
+    );
 
   const freeTable = bands.map(() => dates.map(() => true));
 

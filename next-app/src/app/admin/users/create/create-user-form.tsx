@@ -105,7 +105,7 @@ export function CreateUserForm() {
       </div>
 
       {error && (
-        <div className="flex flex-row items-center gap-4 rounded border border-red-500 bg-red-500/10 p-4 text-red-600">
+        <div className="flex items-center gap-4 rounded border border-red-500 bg-red-500/10 p-4 text-red-600">
           <FontAwesomeIcon
             icon={faTriangleExclamation}
             className="h-6 w-6 text-red-500"

@@ -36,7 +36,7 @@ export default function AdminPageLayout({
       <div className="container flex flex-col gap-8 py-10">
         <h1 className="text-4xl font-medium">Admin Page</h1>
 
-        <div className="flex flex-row flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3">
           {subPages.map(({ name, href }) => (
             <Link
               key={href}

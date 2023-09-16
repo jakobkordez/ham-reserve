@@ -15,7 +15,7 @@ export function CurrentEvents() {
 
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="text-2xl">Trenutno</h2>
+      <h2 className="text-2xl">Trenutni dogodki</h2>
 
       {(events?.length ?? 0) === 0 ? (
         <p className="opacity-90">Yoooo, no events, come back another day</p>

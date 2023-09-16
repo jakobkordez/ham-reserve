@@ -20,7 +20,7 @@ export function EventCard({ event }: EventCardProps) {
 
       {event.fromDateTime && event.toDateTime && (
         <div>
-          <div className="mb-1 flex flex-row justify-between text-sm">
+          <div className="mb-1 flex justify-between text-sm">
             <div>{event.fromDateTime.toLocaleDateString()}</div>
             <div>{event.toDateTime.toLocaleDateString()}</div>
           </div>

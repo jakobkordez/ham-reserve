@@ -10,7 +10,7 @@ export interface AuthState {
   refreshToken: string | null;
   user: User | null;
 
-  getUser: () => Promise<User | null>;
+  getUser: (refresh?: boolean) => Promise<User | null>;
   isValid: () => Promise<boolean>;
   getAccessToken: () => Promise<string | null>;
   logout: () => void;
@@ -23,9 +23,9 @@ export const useAuthState = create(
       refreshToken: null,
       user: null,
 
-      getUser: async (): Promise<User | null> => {
+      getUser: async (refresh?: boolean): Promise<User | null> => {
         const { user, isValid } = get();
-        if (user) return user;
+        if (user && !refresh) return user;
 
         if (!(await isValid())) return null;
 
