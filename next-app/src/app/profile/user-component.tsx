@@ -1,6 +1,7 @@
 'use client';
 
 import { apiFunctions } from '@/api';
+import { ReservationsTable } from '@/components/reservations-table';
 import { Reservation } from '@/interfaces/reservation.interface';
 import { User } from '@/interfaces/user.interface';
 import { useAuthState } from '@/state/auth-state';
@@ -46,7 +47,9 @@ function MyReservations() {
       apiFunctions
         .getReservationsForSelf(token)
         .then((res) => {
-          setReservations(res.data);
+          setReservations(
+            res.data.sort((a, b) => b.forDate.valueOf() - a.forDate.valueOf()),
+          );
         })
         .catch((err) => {
           console.error(err);
@@ -56,31 +59,9 @@ function MyReservations() {
 
   return (
     <div>
-      <div className="mb-2 text-2xl">Moje rezervacije</div>
-      <div>
-        {reservations?.map((e) => (
-          <div
-            key={e._id}
-            className="flex items-center gap-3 border-b px-3 py-2 last:border-0"
-          >
-            <div>{e.forDate.toISOString().slice(0, 10)}</div>
-            <div className="flex gap-1">
-              {e.bands.map((band) => (
-                <div key={band} className="rounded bg-gray-800 px-2 py-0.5">
-                  {band}
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-1">
-              {e.modes.map((mode) => (
-                <div key={mode} className="rounded bg-gray-800 px-2 py-0.5">
-                  {mode}
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <div className="mb-3 text-2xl">Moje rezervacije</div>
+
+      <ReservationsTable reservations={reservations || []} />
     </div>
   );
 }

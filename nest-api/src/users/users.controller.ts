@@ -9,6 +9,7 @@ import {
   NotFoundException,
   BadRequestException,
   ParseArrayPipe,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,6 +22,7 @@ import { UserTokenData } from 'src/auth/interfaces/user-token-data.interface';
 import { User } from './schemas/user.schema';
 import { Reservation } from 'src/reservations/schemas/reservation.schema';
 import { ReservationsService } from 'src/reservations/reservations.service';
+import { isMongoId } from 'class-validator';
 
 @Controller('users')
 export class UsersController {
@@ -70,10 +72,22 @@ export class UsersController {
   @Get('me/reservations')
   async getSelfReservations(
     @RequestUser() userReq: UserTokenData,
+    @Query('event') event?: string,
+    @Query('start') start?: string,
+    @Query('end') end?: string,
   ): Promise<Reservation[]> {
+    if (event && !isMongoId(event))
+      throw new BadRequestException('Invalid event id');
+
     const user = await this.usersService.findOne(userReq.id);
     if (!user) throw new NotFoundException('User not found');
-    return this.reservationsService.findAll({ userId: userReq.id });
+
+    return this.reservationsService.findAll({
+      userId: userReq.id,
+      eventId: event,
+      fromDate: start ? new Date(start) : undefined,
+      toDate: end ? new Date(end) : undefined,
+    });
   }
 
   @Roles(Role.Admin)

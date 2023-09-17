@@ -9,7 +9,6 @@ import { useAuthState } from '@/state/auth-state';
 import { dayInMs } from '@/util/date.util';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
 interface ReserveComponentProps {
@@ -34,12 +33,7 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
     getUser().then((user) => setUser(user));
   }, [getUser]);
 
-  if (!user)
-    return (
-      <Link href="/login" className="button">
-        Prijavi se za rezervacijo
-      </Link>
-    );
+  if (!user) return <></>;
 
   if (!event.access.includes(user._id))
     return <div>Rezervacija ni možna, prosi administratorja za dostop</div>;
@@ -91,14 +85,12 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
             setDate(date);
           }}
         />
-        <div className="flex gap-1">
+        <div className="flex flex-wrap gap-1">
           {dates.map((dt, i) => (
             <button
               key={i}
-              className={`flex-1 rounded bg-gray-700 px-2 py-1 shadow ${
-                date?.valueOf() === dt?.valueOf()
-                  ? 'bg-green-700'
-                  : 'hover:bg-gray-600 active:bg-gray-500'
+              className={`button flex-1 shadow ${
+                date?.valueOf() === dt?.valueOf() ? 'is-green' : 'is-light'
               }`}
               onClick={() => {
                 setDate(dt);
@@ -127,10 +119,8 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
             return (
               <button
                 key={band}
-                className={`flex items-center gap-2 rounded-md px-4 py-2 shadow ${
-                  checked
-                    ? 'bg-green-700 hover:bg-green-600 active:bg-green-800'
-                    : 'bg-gray-700 hover:bg-gray-600 active:bg-gray-500'
+                className={`button button flex items-center gap-2 shadow ${
+                  checked ? 'is-green' : 'is-light'
                 }`}
                 onClick={toggle}
               >
@@ -166,10 +156,8 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
             return (
               <button
                 key={mode}
-                className={`flex items-center gap-2 rounded-md px-4 py-2 shadow ${
-                  checked
-                    ? 'bg-green-700 hover:bg-green-600 active:bg-green-800'
-                    : 'bg-gray-700 hover:bg-gray-600 active:bg-gray-500'
+                className={`button flex items-center gap-2 shadow ${
+                  checked ? 'is-green' : 'is-light'
                 }`}
                 onClick={toggle}
               >
@@ -199,7 +187,7 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
         </div>
       )}
 
-      <button className="button" onClick={submit}>
+      <button className="button is-primary" onClick={submit}>
         Rezerviraj
       </button>
     </div>

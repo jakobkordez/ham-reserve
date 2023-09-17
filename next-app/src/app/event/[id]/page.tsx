@@ -28,12 +28,12 @@ export default function EventPage({ params: { id } }: EventPageProps) {
   }, [id]);
 
   return (
-    <div className="container py-8">
+    <div className="container py-10">
       {event === undefined && <div>Loading...</div>}
       {event === null && (
         <div className="flex flex-col items-center gap-6">
           <h1 className="text-2xl font-medium">404 - Dogodek ne obstaja</h1>
-          <Link href="/" className="button">
+          <Link href="/" className="button is-primary">
             Nazaj na domačo stran
           </Link>
         </div>

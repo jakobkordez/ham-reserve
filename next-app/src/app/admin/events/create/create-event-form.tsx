@@ -124,7 +124,7 @@ export function CreateEventForm() {
         </div>
       )}
 
-      <button className="button" onClick={submit}>
+      <button className="button is-primary" onClick={submit}>
         Ustvari
       </button>
     </div>

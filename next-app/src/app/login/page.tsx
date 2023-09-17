@@ -50,7 +50,7 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button className="button" onClick={() => login()}>
+        <button className="button is-primary" onClick={() => login()}>
           Prijava
         </button>
       </div>

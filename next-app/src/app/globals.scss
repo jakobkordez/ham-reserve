@@ -3,7 +3,23 @@
 }
 
 .button {
-  @apply rounded bg-primary px-4 py-2 font-bold text-white hover:opacity-90;
+  @apply rounded px-4 py-2;
+
+  &.is-primary {
+    @apply bg-primary font-bold text-white hover:opacity-90 active:opacity-80;
+  }
+
+  &.is-light {
+    @apply bg-gray-200 hover:bg-gray-300 active:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 dark:active:bg-gray-500;
+  }
+
+  &.is-green {
+    @apply bg-green-400 hover:bg-green-300 active:bg-green-500 dark:bg-green-700 dark:hover:bg-green-600 dark:active:bg-green-800;
+  }
+}
+
+.tag {
+  @apply rounded-md bg-gray-200 px-2 py-1 dark:bg-gray-800;
 }
 
 .header-button {

@@ -6,12 +6,24 @@ import { Event } from '@/interfaces/event.interface';
 import { getUTCString } from '@/util/date.util';
 import { ReserveComponent } from './reserve-component';
 import { FreeDatesComponent } from './free-dates-component';
+import { MyReservations } from './my-reservations';
+import { User } from '@/interfaces/user.interface';
+import { useEffect, useState } from 'react';
+import { useAuthState } from '@/state/auth-state';
+import Link from 'next/link';
 
 interface EventComponentProps {
   event: Event;
 }
 
 export function EventComponent({ event }: EventComponentProps) {
+  const [user, setUser] = useState<User | null>();
+  const getUser = useAuthState((state) => state.getUser);
+
+  useEffect(() => {
+    getUser().then((user) => setUser(user));
+  }, [getUser]);
+
   return (
     <div className="flex flex-col gap-8">
       <div>
@@ -39,10 +51,25 @@ export function EventComponent({ event }: EventComponentProps) {
         <FreeDatesComponent event={event} />
       </div>
 
-      <div>
-        <h2 className="mb-4 text-2xl">Rezervacija</h2>
-        <ReserveComponent event={event} />
-      </div>
+      {user ? (
+        <>
+          <div>
+            <h2 className="mb-4 text-2xl">Moje rezervacije</h2>
+            <MyReservations event={event} />
+          </div>
+
+          <div>
+            <h2 className="mb-4 text-2xl">Nova rezervacija</h2>
+            <ReserveComponent event={event} />
+          </div>
+        </>
+      ) : (
+        <div>
+          <Link href="/login" className="button is-primary">
+            Prijavi se za rezervacijo
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

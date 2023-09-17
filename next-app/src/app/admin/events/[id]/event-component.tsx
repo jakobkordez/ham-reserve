@@ -43,7 +43,7 @@ export function EventComponent({ event }: EventComponentProps) {
       </div>
 
       <div className="flex gap-4">
-        <Link href={`/event/${event._id}`} className="button">
+        <Link href={`/event/${event._id}`} className="button is-primary">
           Na stran dogodka
         </Link>
       </div>
@@ -142,7 +142,7 @@ function Button({
 }) {
   return (
     <button
-      className="h-10 w-10 rounded-full bg-gray-800 hover:bg-gray-700"
+      className="h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
       onClick={onClick}
     >
       {children}

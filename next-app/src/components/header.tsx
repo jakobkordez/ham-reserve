@@ -67,6 +67,7 @@ function UserHeader() {
           <Link
             href="/profile"
             className="block w-full px-4 py-2 text-left hover:bg-black/5 dark:hover:bg-white/10"
+            onClick={() => setIsOpen(false)}
           >
             Profil
           </Link>

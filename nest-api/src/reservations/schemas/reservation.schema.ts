@@ -1,7 +1,8 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Event } from 'src/events/schemas/event.schema';
 import { User } from 'src/users/schemas/user.schema';
+import { LogSummary } from '../interfaces/log-summary.interface';
 
 export type ReservationDocument = Reservation & Document;
 
@@ -39,6 +40,23 @@ export class Reservation {
     required: true,
   })
   bands: string[];
+
+  @Prop({
+    transform: () => undefined,
+  })
+  adiFile: string;
+
+  @Prop({
+    type: raw({
+      qso_count: { type: Number },
+      bands: { type: [String] },
+      modes: { type: [String] },
+      first_qso_time: { type: Date },
+      last_qso_time: { type: Date },
+      warnings: { type: [String] },
+    }),
+  })
+  logSummary: LogSummary;
 
   @Prop({
     required: true,

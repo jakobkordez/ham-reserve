@@ -4,6 +4,7 @@ import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { Reservation } from './schemas/reservation.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { LogSummary } from './interfaces/log-summary.interface';
 
 interface ReservationFilter {
   fromDate?: Date;
@@ -60,6 +61,20 @@ export class ReservationsService {
   ): Promise<Reservation> {
     return this.reservationModel
       .findByIdAndUpdate(id, updateReservationDto, { new: true })
+      .exec();
+  }
+
+  updateLog(
+    id: string,
+    log: string,
+    logSummary: LogSummary,
+  ): Promise<Reservation> {
+    return this.reservationModel
+      .findByIdAndUpdate(
+        id,
+        { $set: { adiFile: log, logSummary } },
+        { new: true },
+      )
       .exec();
   }
 

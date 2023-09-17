@@ -164,15 +164,41 @@ export const apiFunctions = {
   getReservationsForEvent: async (eventId: string) => {
     return await api.get<Reservation[]>(`/events/${eventId}/reservations`);
   },
-  getReservationsForSelf: async (accessToken: string) => {
+  getReservationsForSelf: async (
+    accessToken: string,
+    filter?: {
+      event?: string;
+      start?: string;
+      end?: string;
+    },
+  ) => {
     return await api.get<Reservation[]>('/users/me/reservations', {
       headers: { Authorization: `Bearer ${accessToken}` },
+      params: {
+        event: filter?.event,
+        start: filter?.start,
+        end: filter?.end,
+      },
     });
   },
   getReservationsForUser: async (accessToken: string, userId: string) => {
     return await api.get<Reservation[]>(`/users/${userId}/reservations`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
+  },
+  uploadLog: async (accessToken: string, reservationId: string, file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return await api.post<Reservation>(
+      `/reservations/${reservationId}/log`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
   },
 };
 

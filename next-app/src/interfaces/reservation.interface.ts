@@ -1,3 +1,5 @@
+import { LogSummary } from './log-summary.interface';
+
 export interface Reservation {
   _id: string;
   user: string;
@@ -5,6 +7,7 @@ export interface Reservation {
   forDate: Date;
   modes: string[];
   bands: string[];
+  logSummary?: LogSummary;
   createdAt: Date;
   isDeleted: boolean;
 }
