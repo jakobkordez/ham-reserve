@@ -10,7 +10,7 @@ export function CurrentEvents() {
   const [events, setEvents] = useState<Event[]>();
 
   useEffect(() => {
-    apiFunctions.getCurrentEvents().then((res) => setEvents(res.data));
+    apiFunctions.getCurrentEvents().then(setEvents).catch(console.error);
   }, []);
 
   return (

@@ -1,3 +1,5 @@
+import { Event } from '@/interfaces/event.interface';
+
 export function getUTCString(dt: Date) {
   function pad(num: number) {
     return num < 10 ? '0' + num : num;
@@ -14,3 +16,11 @@ export function getUTCString(dt: Date) {
 export const dayInMs = 1000 * 60 * 60 * 24;
 
 export const dayInWeeks = ['Ned', 'Pon', 'Tor', 'Sre', 'Čet', 'Pet', 'Sob'];
+
+export function getNextNDays(n: number, event: Event) {
+  const start = Math.max(Date.now(), event.fromDateTime?.valueOf() ?? 0);
+  return new Array(n)
+    .fill(null)
+    .map((_, i) => new Date(Math.floor(start / dayInMs + i) * dayInMs))
+    .filter((date) => !event.toDateTime || date <= event.toDateTime);
+}

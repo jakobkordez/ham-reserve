@@ -5,6 +5,7 @@ import { Event } from './interfaces/event.interface';
 import { CreateEventDto } from './interfaces/create-event-dto.interface';
 import { Reservation } from './interfaces/reservation.interface';
 import { CreateReservationDto } from './interfaces/create-reservation-dto';
+import { useAuthState } from './state/auth-state';
 
 const baseURL = '/api';
 
@@ -25,180 +26,225 @@ interface LoginResponse {
   refreshToken: string;
 }
 
+async function getAuthHeader() {
+  const accessToken = await useAuthState.getState().getAccessToken();
+  if (!accessToken) throw new Error('Not authenticated');
+  return { Authorization: `Bearer ${accessToken}` };
+}
+
 export const apiFunctions = {
   // Auth
   login: async (username: string, password: string) => {
-    return await api.post<LoginResponse>('/auth/login', { username, password });
+    return (
+      await api.post<LoginResponse>('/auth/login', { username, password })
+    ).data;
   },
   refresh: async (refreshToken: string) => {
-    return await api.get<LoginResponse>('/auth/refresh', {
-      headers: { Authorization: `Bearer ${refreshToken}` },
-    });
+    return (
+      await api.get<LoginResponse>('/auth/refresh', {
+        headers: { Authorization: `Bearer ${refreshToken}` },
+      })
+    ).data;
   },
-  logout: async (accessToken: string) => {
-    return await api.get('/auth/logout', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  logout: async () => {
+    return (
+      await api.get('/auth/logout', {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
 
   // Users
-  createUser: async (accessToken: string, user: CreateUserDto) => {
-    return await api.post<User>('/users', user, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  createUser: async (user: CreateUserDto) => {
+    return (
+      await api.post<User>('/users', user, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  getAllUsers: async (accessToken: string) => {
-    return await api.get<User[]>('/users', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  getAllUsers: async () => {
+    return (
+      await api.get<User[]>('/users', {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  getMe: async (accessToken: string) => {
-    return await api.get<User>('/users/me', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  getMe: async () => {
+    return (
+      await api.get<User>('/users/me', {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  findByUsername: async (accessToken: string, username: string) => {
-    return await api.get<User>(`/users/search/${username}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  findByUsername: async (username: string) => {
+    return (
+      await api.get<User>(`/users/search/${username}`, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  getUser: async (accessToken: string, id: string) => {
-    return await api.get<User>(`/users/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  getUser: async (id: string) => {
+    return (
+      await api.get<User>(`/users/${id}`, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  getManyUsers: async (accessToken: string, ids: string[]) => {
-    return await api.post<User[]>(`/users/many`, ids, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  getManyUsers: async (ids: string[]) => {
+    return (
+      await api.post<User[]>(`/users/many`, ids, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  updateUser: async (accessToken: string, id: string, user: User) => {
-    return await api.patch<User>(`/users/${id}`, user, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  updateUser: async (id: string, user: User) => {
+    return (
+      await api.patch<User>(`/users/${id}`, user, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  deleteUser: async (accessToken: string, id: string) => {
-    return await api.delete<User>(`/users/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  deleteUser: async (id: string) => {
+    return (
+      await api.delete<User>(`/users/${id}`, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
 
   // Events
-  createEvent: async (accessToken: string, event: CreateEventDto) => {
-    return await api.post<Event>('/events', event, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  createEvent: async (event: CreateEventDto) => {
+    return (
+      await api.post<Event>('/events', event, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  getAllEvents: async (accessToken: string) => {
-    return await api.get<Event[]>('/events/all', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  getAllEvents: async () => {
+    return (
+      await api.get<Event[]>('/events/all', {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  getPrivateEvents: async (accessToken: string) => {
-    return await api.get<Event[]>('/events/private', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  getPrivateEvents: async () => {
+    return (
+      await api.get<Event[]>('/events/private', {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
   getCurrentEvents: async () => {
-    return await api.get<Event[]>('/events');
+    return (await api.get<Event[]>('/events')).data;
   },
   getEvent: async (id: string) => {
-    return await api.get<Event>(`/events/${id}`);
+    return (await api.get<Event>(`/events/${id}`)).data;
   },
-  updateEvent: async (accessToken: string, id: string, event: Event) => {
-    return await api.patch<Event>(`/events/${id}`, event, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  updateEvent: async (id: string, event: Event) => {
+    return (
+      await api.patch<Event>(`/events/${id}`, event, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  grantEventAccess: async (accessToken: string, id: string, userId: string) => {
-    return await api.get<Event>(`/events/${id}/grant/${userId}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  grantEventAccess: async (id: string, userId: string) => {
+    return (
+      await api.get<Event>(`/events/${id}/grant/${userId}`, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  revokeEventAccess: async (
-    accessToken: string,
-    id: string,
-    userId: string,
-  ) => {
-    return await api.get<Event>(`/events/${id}/revoke/${userId}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  revokeEventAccess: async (id: string, userId: string) => {
+    return (
+      await api.get<Event>(`/events/${id}/revoke/${userId}`, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  deleteEvent: async (accessToken: string, id: string) => {
-    return await api.delete<Event>(`/events/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  deleteEvent: async (id: string) => {
+    return (
+      await api.delete<Event>(`/events/${id}`, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
 
   // Reservations
-  getReservation: async (accessToken: string, id: string) => {
-    return await api.get<Reservation>(`/reservations/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  getReservation: async (id: string) => {
+    return (
+      await api.get<Reservation>(`/reservations/${id}`, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  updateReservation: async (
-    accessToken: string,
-    id: string,
-    reservation: Reservation,
-  ) => {
-    return await api.patch<Reservation>(`/reservations/${id}`, reservation, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  updateReservation: async (id: string, reservation: Reservation) => {
+    return (
+      await api.patch<Reservation>(`/reservations/${id}`, reservation, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  deleteReservation: async (accessToken: string, id: string) => {
-    return await api.delete<Reservation>(`/reservations/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  deleteReservation: async (id: string) => {
+    return (
+      await api.delete<Reservation>(`/reservations/${id}`, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
   createReservation: async (
-    accessToken: string,
     eventId: string,
     reservation: CreateReservationDto,
   ) => {
-    return await api.post<Reservation>(
-      `/events/${eventId}/reservations`,
-      reservation,
-      { headers: { Authorization: `Bearer ${accessToken}` } },
-    );
+    return (
+      await api.post<Reservation>(
+        `/events/${eventId}/reservations`,
+        reservation,
+        { headers: await getAuthHeader() },
+      )
+    ).data;
   },
   getReservationsForEvent: async (eventId: string) => {
-    return await api.get<Reservation[]>(`/events/${eventId}/reservations`);
+    return (await api.get<Reservation[]>(`/events/${eventId}/reservations`))
+      .data;
   },
-  getReservationsForSelf: async (
-    accessToken: string,
-    filter?: {
-      event?: string;
-      start?: string;
-      end?: string;
-    },
-  ) => {
-    return await api.get<Reservation[]>('/users/me/reservations', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      params: {
-        event: filter?.event,
-        start: filter?.start,
-        end: filter?.end,
-      },
-    });
+  getReservationsForSelf: async (filter?: {
+    event?: string;
+    start?: string;
+    end?: string;
+  }) => {
+    return (
+      await api.get<Reservation[]>('/users/me/reservations', {
+        headers: await getAuthHeader(),
+        params: {
+          event: filter?.event,
+          start: filter?.start,
+          end: filter?.end,
+        },
+      })
+    ).data;
   },
-  getReservationsForUser: async (accessToken: string, userId: string) => {
-    return await api.get<Reservation[]>(`/users/${userId}/reservations`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  getReservationsForUser: async (userId: string) => {
+    return (
+      await api.get<Reservation[]>(`/users/${userId}/reservations`, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
   },
-  uploadLog: async (accessToken: string, reservationId: string, file: File) => {
+  uploadLog: async (reservationId: string, file: File) => {
     const formData = new FormData();
     formData.append('file', file);
-    return await api.post<Reservation>(
-      `/reservations/${reservationId}/log`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'multipart/form-data',
+    return (
+      await api.post<Reservation>(
+        `/reservations/${reservationId}/log`,
+        formData,
+        {
+          headers: {
+            ...(await getAuthHeader()),
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      },
-    );
+      )
+    ).data;
   },
 };
 

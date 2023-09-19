@@ -3,34 +3,33 @@
 import { apiFunctions } from '@/api';
 import { Role } from '@/enums/role.enum';
 import { User } from '@/interfaces/user.interface';
-import { useAuthState } from '@/state/auth-state';
 import { faCrown, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 import { DeleteUserDialog } from './delete-user-dialog';
 
 export function UsersList() {
-  const [getAccessToken, getMe] = useAuthState((s) => [
-    s.getAccessToken,
-    s.getUser,
-  ]);
-
   const [users, setUsers] = useState<User[]>();
   const [me, setMe] = useState<User>();
   const [deleteUser, setDeleteUser] = useState<User>();
 
-  useEffect(() => {
-    getAccessToken().then(async (token) => {
-      if (!token) return;
-      const users = await apiFunctions.getAllUsers(token);
+  async function getUsers() {
+    try {
+      const [users, me] = await Promise.all([
+        apiFunctions.getAllUsers(),
+        apiFunctions.getMe(),
+      ]);
 
-      const me = await getMe();
-      if (!me) return;
-
-      setUsers(users.data);
+      setUsers(users);
       setMe(me);
-    });
-  }, [getAccessToken, getMe]);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getUsers();
+  }, []);
 
   if (!users || !me) return <div>Loading...</div>;
 
@@ -87,11 +86,13 @@ export function UsersList() {
         user={deleteUser}
         onCancel={() => setDeleteUser(undefined)}
         onConfirm={async () => {
-          const token = await getAccessToken();
-          if (!token) return;
-          apiFunctions.deleteUser(token, deleteUser!._id);
-          setDeleteUser(undefined);
-          window.location.reload();
+          apiFunctions
+            .deleteUser(deleteUser!._id)
+            .then(() => {
+              setDeleteUser(undefined);
+              getUsers();
+            })
+            .catch(console.error);
         }}
       />
     </>

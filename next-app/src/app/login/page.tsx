@@ -19,7 +19,7 @@ export default function Login() {
   async function login() {
     try {
       const res = await apiFunctions.login(username.toUpperCase(), password);
-      useAuthState.setState(res.data);
+      useAuthState.setState(res);
       window.location.replace('/');
     } catch (e) {
       console.log(e);

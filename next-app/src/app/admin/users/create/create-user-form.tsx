@@ -1,7 +1,6 @@
 'use client';
 
 import { apiFunctions } from '@/api';
-import { useAuthState } from '@/state/auth-state';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from 'next/navigation';
@@ -17,34 +16,25 @@ export function CreateUserForm() {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState<string>();
 
-  const getAccessToken = useAuthState((s) => s.getAccessToken);
-
   function submit() {
     setError(undefined);
-    getAccessToken().then((accessToken) => {
-      if (!accessToken) {
-        setError('Session expired');
-        throw new Error('No access token');
-      }
-      apiFunctions
-        .createUser(accessToken, {
-          username: username.toUpperCase(),
-          password,
-          name,
-          email: email || undefined,
-          phone: phone || undefined,
-        })
-        .then((res) => {
-          console.log(res);
-          router.push('/admin/users');
-        })
-        .catch((err) => {
-          console.error(err);
-          const msg = err.response.data.message;
-          if (msg instanceof Array) setError(msg.join(', '));
-          else setError(msg);
-        });
-    });
+    apiFunctions
+      .createUser({
+        username: username.toUpperCase(),
+        password,
+        name,
+        email: email || undefined,
+        phone: phone || undefined,
+      })
+      .then(() => {
+        router.push('/admin/users');
+      })
+      .catch((err) => {
+        console.error(err);
+        const msg = err.response.data.message;
+        if (msg instanceof Array) setError(msg.join(', '));
+        else setError(msg);
+      });
   }
 
   return (

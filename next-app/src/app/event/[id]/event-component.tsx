@@ -9,8 +9,8 @@ import { FreeDatesComponent } from './free-dates-component';
 import { MyReservations } from './my-reservations';
 import { User } from '@/interfaces/user.interface';
 import { useEffect, useState } from 'react';
-import { useAuthState } from '@/state/auth-state';
 import Link from 'next/link';
+import { useUserState } from '@/state/user-state';
 
 interface EventComponentProps {
   event: Event;
@@ -18,10 +18,10 @@ interface EventComponentProps {
 
 export function EventComponent({ event }: EventComponentProps) {
   const [user, setUser] = useState<User | null>();
-  const getUser = useAuthState((state) => state.getUser);
+  const getUser = useUserState((state) => state.getUser);
 
   useEffect(() => {
-    getUser().then((user) => setUser(user));
+    getUser().then(setUser);
   }, [getUser]);
 
   return (

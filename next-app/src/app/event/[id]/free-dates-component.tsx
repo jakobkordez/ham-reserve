@@ -2,7 +2,7 @@
 import { apiFunctions } from '@/api';
 import { Event } from '@/interfaces/event.interface';
 import { Reservation } from '@/interfaces/reservation.interface';
-import { dayInMs, dayInWeeks } from '@/util/date.util';
+import { dayInMs, dayInWeeks, getNextNDays } from '@/util/date.util';
 import { useEffect, useState } from 'react';
 import { Band } from '@/enums/band.enum';
 
@@ -12,19 +12,14 @@ export function FreeDatesComponent({ event }: { event: Event }) {
   useEffect(() => {
     apiFunctions
       .getReservationsForEvent(event._id)
-      .then((res) => setReservations(res.data))
+      .then(setReservations)
       .catch(console.error);
   }, [event._id]);
 
   const bands = Object.values(Band).map((val) => val.toString());
-  const dates = new Array(7)
-    .fill(null)
-    .map((_, i) => new Date(Math.floor(Date.now() / dayInMs + i) * dayInMs))
-    .filter(
-      (date) =>
-        (!event.fromDateTime || date >= event.fromDateTime) &&
-        (!event.toDateTime || date <= event.toDateTime),
-    );
+  const dates = getNextNDays(7, event);
+
+  if (!dates.length) return <div>Dogodka je konec</div>;
 
   const freeTable = bands.map(() => dates.map(() => true));
 

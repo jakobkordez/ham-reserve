@@ -5,8 +5,8 @@ import { Band } from '@/enums/band.enum';
 import { Mode } from '@/enums/mode.enum';
 import { Event } from '@/interfaces/event.interface';
 import { User } from '@/interfaces/user.interface';
-import { useAuthState } from '@/state/auth-state';
-import { dayInMs } from '@/util/date.util';
+import { useUserState } from '@/state/user-state';
+import { getNextNDays } from '@/util/date.util';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState } from 'react';
@@ -19,10 +19,7 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
   const dateRef = useRef<HTMLInputElement>(null);
 
   const [user, setUser] = useState<User | null>();
-  const [getUser, getAccessToken] = useAuthState((state) => [
-    state.getUser,
-    state.getAccessToken,
-  ]);
+  const getUser = useUserState((state) => state.getUser);
 
   const [date, setDate] = useState<Date>();
   const [bands, setBands] = useState<Set<Band>>(new Set());
@@ -30,7 +27,7 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    getUser().then((user) => setUser(user));
+    getUser().then(setUser);
   }, [getUser]);
 
   if (!user) return <></>;
@@ -40,10 +37,8 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
 
   async function submit() {
     setError(undefined);
-    const token = await getAccessToken();
-    if (!token) return;
     apiFunctions
-      .createReservation(token, event._id, {
+      .createReservation(event._id, {
         forDate: date!.toISOString(),
         bands: Array.from(bands),
         modes: Array.from(modes),
@@ -59,14 +54,7 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
       });
   }
 
-  const dates = new Array(7)
-    .fill(null)
-    .map((_, i) => new Date(Math.floor(Date.now() / dayInMs + i) * dayInMs))
-    .filter(
-      (date) =>
-        (!event.fromDateTime || date >= event.fromDateTime) &&
-        (!event.toDateTime || date <= event.toDateTime),
-    );
+  const dates = getNextNDays(7, event);
 
   return (
     <div className="flex flex-col gap-6 rounded border border-gray-500 p-6">

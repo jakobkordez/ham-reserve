@@ -1,7 +1,7 @@
 'use client';
 
 import { Role } from '@/enums/role.enum';
-import { useAuthState } from '@/state/auth-state';
+import { useUserState } from '@/state/user-state';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
@@ -23,7 +23,7 @@ export default function AdminPageLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const getUser = useAuthState((s) => s.getUser);
+  const getUser = useUserState((s) => s.getUser);
 
   useEffect(() => {
     getUser().then((u) => {

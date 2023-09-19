@@ -4,7 +4,6 @@ import { apiFunctions } from '@/api';
 import { Event } from '@/interfaces/event.interface';
 import { LogSummary } from '@/interfaces/log-summary.interface';
 import { Reservation } from '@/interfaces/reservation.interface';
-import { useAuthState } from '@/state/auth-state';
 import { getUTCString } from '@/util/date.util';
 import {
   faFileCircleCheck,
@@ -109,7 +108,9 @@ function LogSummaryC({ logSummary }: { logSummary: LogSummary }) {
       </div>
 
       <div className="text-orange-500 dark:text-yellow-100">
-        {logSummary.warnings && <div className="mt-3">Opozorila:</div>}
+        {(logSummary.warnings?.length ?? 0) > 0 && (
+          <div className="mt-3">Opozorila:</div>
+        )}
         {logSummary.warnings?.map((warning, i) => <div key={i}>{warning}</div>)}
       </div>
     </div>
@@ -117,27 +118,25 @@ function LogSummaryC({ logSummary }: { logSummary: LogSummary }) {
 }
 
 function Upload({ res }: { res: Reservation }) {
+  const [error, setError] = useState<string>();
   const [file, setFile] = useState<File>();
-  const getAccessToken = useAuthState((state) => state.getAccessToken);
 
   async function submit() {
     if (!file) {
+      setError('Datoteka ni izbrana');
       console.error('No file selected');
       return;
     }
 
-    const token = await getAccessToken();
-    if (!token) {
-      console.error('No token');
-      return;
-    }
-
     apiFunctions
-      .uploadLog(token, res._id, file)
+      .uploadLog(res._id, file)
       .then(() => {
         window.location.reload();
       })
-      .catch(console.error);
+      .catch((e) => {
+        setError(e.response.data.message);
+        console.error(e);
+      });
   }
 
   return (
@@ -157,6 +156,7 @@ function Upload({ res }: { res: Reservation }) {
           {res.logSummary ? 'Povozi' : 'Pošlji'}
         </button>
       </div>
+      {error && <div className="text-red-500">{error}</div>}
     </div>
   );
 }

@@ -5,18 +5,13 @@ import { Event } from '@/interfaces/event.interface';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { EventCard } from './event-card';
-import { useAuthState } from '@/state/auth-state';
 
 export function PrivateEvents() {
   const [events, setEvents] = useState<Event[]>();
-  const getAccessToken = useAuthState((s) => s.getAccessToken);
 
   useEffect(() => {
-    getAccessToken().then((token) => {
-      if (!token) return;
-      apiFunctions.getPrivateEvents(token).then((res) => setEvents(res.data));
-    });
-  }, [getAccessToken]);
+    apiFunctions.getPrivateEvents().then(setEvents).catch(console.log);
+  }, []);
 
   if ((events?.length ?? 0) === 0) return <></>;
 

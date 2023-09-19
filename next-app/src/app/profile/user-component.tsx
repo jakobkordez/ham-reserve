@@ -4,11 +4,11 @@ import { apiFunctions } from '@/api';
 import { ReservationsTable } from '@/components/reservations-table';
 import { Reservation } from '@/interfaces/reservation.interface';
 import { User } from '@/interfaces/user.interface';
-import { useAuthState } from '@/state/auth-state';
+import { useUserState } from '@/state/user-state';
 import { useEffect, useState } from 'react';
 
 export function UserComponent() {
-  const getUser = useAuthState((s) => s.getUser);
+  const getUser = useUserState((s) => s.getUser);
   const [user, setUser] = useState<User>();
 
   useEffect(() => {
@@ -38,24 +38,20 @@ export function UserComponent() {
 }
 
 function MyReservations() {
-  const getAccessToken = useAuthState((s) => s.getAccessToken);
   const [reservations, setReservations] = useState<Reservation[]>();
 
   useEffect(() => {
-    getAccessToken().then((token) => {
-      if (!token) return;
-      apiFunctions
-        .getReservationsForSelf(token)
-        .then((res) => {
-          setReservations(
-            res.data.sort((a, b) => b.forDate.valueOf() - a.forDate.valueOf()),
-          );
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    });
-  }, [getAccessToken]);
+    apiFunctions
+      .getReservationsForSelf()
+      .then((res) => {
+        setReservations(
+          res.sort((a, b) => b.forDate.valueOf() - a.forDate.valueOf()),
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   return (
     <div>

@@ -1,16 +1,15 @@
 import { apiFunctions } from '@/api';
-import { User } from '@/interfaces/user.interface';
 import jwtDecode from 'jwt-decode';
 import secureLocalStorage from 'react-secure-storage';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+const useValidLock = create<Promise<boolean> | undefined>(() => undefined);
+
 export interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
-  user: User | null;
 
-  getUser: (refresh?: boolean) => Promise<User | null>;
   isValid: () => Promise<boolean>;
   getAccessToken: () => Promise<string | null>;
   logout: () => void;
@@ -21,55 +20,60 @@ export const useAuthState = create(
     (set, get) => ({
       accessToken: null,
       refreshToken: null,
-      user: null,
+      isValidLock: null,
 
-      getUser: async (refresh?: boolean): Promise<User | null> => {
-        const { user, isValid } = get();
-        if (user && !refresh) return user;
-
-        if (!(await isValid())) return null;
-
-        try {
-          const user = (await apiFunctions.getMe(get().accessToken!)).data;
-          set({ user });
-          return user;
-        } catch (e) {
-          console.log(e);
-          return null;
-        }
-      },
       getAccessToken: async () => {
         const isValid = await get().isValid();
         return isValid ? get().accessToken : null;
       },
       isValid: async () => {
-        const { accessToken, refreshToken } = get();
+        const currentLock = useValidLock.getState();
+        if (currentLock) return currentLock;
 
-        if (accessToken) {
-          const { exp } = jwtDecode(accessToken) as { exp: number };
-          if (Date.now() < exp * 1000) return true;
-          else set({ accessToken: null });
-        }
+        const newLock = new Promise<boolean>(async (resolve) => {
+          const { accessToken, refreshToken } = get();
 
-        if (refreshToken) {
-          const { exp } = jwtDecode(refreshToken) as { exp: number };
-          if (Date.now() < exp * 1000) {
-            // Try to refresh
-            try {
-              set((await apiFunctions.refresh(refreshToken)).data);
-              return true;
-            } catch (e) {
-              set({ refreshToken: null });
+          if (accessToken) {
+            const { exp } = jwtDecode(accessToken) as { exp: number };
+            if (Date.now() < exp * 1000) {
+              resolve(true);
+              return;
+            } else set({ accessToken: null });
+          }
+
+          if (refreshToken) {
+            const { exp } = jwtDecode(refreshToken) as { exp: number };
+            if (Date.now() < exp * 1000) {
+              // Try to refresh
+              try {
+                set(await apiFunctions.refresh(refreshToken));
+                resolve(true);
+                return;
+              } catch (e) {
+                set({ refreshToken: null });
+              }
             }
           }
-        }
 
-        set({ refreshToken: null, accessToken: null, user: null });
-        return false;
+          set({ refreshToken: null, accessToken: null });
+          resolve(false);
+        });
+
+        useValidLock.setState(newLock);
+
+        const res = await newLock;
+
+        useValidLock.setState(undefined);
+
+        return res;
       },
       logout: async () => {
-        set({ accessToken: null, refreshToken: null, user: null });
-        if (await get().isValid()) apiFunctions.logout(get().accessToken!);
+        try {
+          apiFunctions.logout();
+        } catch (e) {
+          console.error(e);
+        }
+        set({ accessToken: null, refreshToken: null });
       },
     }),
     {

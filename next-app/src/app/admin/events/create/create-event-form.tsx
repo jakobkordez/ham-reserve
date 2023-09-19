@@ -1,7 +1,6 @@
 'use client';
 
 import { apiFunctions } from '@/api';
-import { useAuthState } from '@/state/auth-state';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from 'next/navigation';
@@ -15,35 +14,27 @@ export function CreateEventForm() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [error, setError] = useState<string>();
 
-  const getAccessToken = useAuthState((s) => s.getAccessToken);
   const router = useRouter();
 
   function submit() {
     setError(undefined);
-    getAccessToken().then((accessToken) => {
-      if (!accessToken) {
-        setError('Session expired');
-        throw new Error('No access token');
-      }
-      apiFunctions
-        .createEvent(accessToken, {
-          callsign: callsign.toUpperCase(),
-          description,
-          fromDateTime: fromDateTime?.toISOString(),
-          toDateTime: toDateTime?.toISOString(),
-          isPrivate,
-        })
-        .then((res) => {
-          console.log(res);
-          router.push('/admin/events');
-        })
-        .catch((err) => {
-          console.error(err);
-          const msg = err.response.data.message;
-          if (msg instanceof Array) setError(msg.join(', '));
-          else setError(msg);
-        });
-    });
+    apiFunctions
+      .createEvent({
+        callsign: callsign.toUpperCase(),
+        description,
+        fromDateTime: fromDateTime?.toISOString(),
+        toDateTime: toDateTime?.toISOString(),
+        isPrivate,
+      })
+      .then(() => {
+        router.push('/admin/events');
+      })
+      .catch((err) => {
+        console.error(err);
+        const msg = err.response.data.message;
+        if (msg instanceof Array) setError(msg.join(', '));
+        else setError(msg);
+      });
   }
 
   return (

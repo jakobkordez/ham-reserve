@@ -4,6 +4,7 @@ import { Role } from '@/enums/role.enum';
 import { User } from '@/interfaces/user.interface';
 import { useAuthState } from '@/state/auth-state';
 import { useThemeState } from '@/state/theme-state';
+import { useUserState } from '@/state/user-state';
 import { faMoon, faSun, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -38,7 +39,8 @@ export function Header() {
 
 function UserHeader() {
   const [user, setUser] = useState<User>();
-  const [getUser, logout] = useAuthState((s) => [s.getUser, s.logout]);
+  const getUser = useUserState((s) => s.getUser);
+  const logout = useAuthState((s) => s.logout);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {

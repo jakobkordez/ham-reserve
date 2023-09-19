@@ -3,20 +3,15 @@
 import { apiFunctions } from '@/api';
 import { PrivateTag } from '@/components/private-tag';
 import { Event } from '@/interfaces/event.interface';
-import { useAuthState } from '@/state/auth-state';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export function EventsList() {
-  const [getAccessToken] = useAuthState((state) => [state.getAccessToken]);
   const [events, setEvents] = useState<Event[]>();
 
   useEffect(() => {
-    getAccessToken().then((token) => {
-      if (!token) return;
-      apiFunctions.getAllEvents(token).then((res) => setEvents(res.data));
-    });
-  }, [getAccessToken]);
+    apiFunctions.getAllEvents().then(setEvents).catch(console.error);
+  }, []);
 
   return (
     <div className="flex flex-col">

@@ -17,9 +17,7 @@ export default function AdminEventPage({ params: { id } }: EventPageProps) {
   useEffect(() => {
     apiFunctions
       .getEvent(id)
-      .then((res) => {
-        setEvent(res.data);
-      })
+      .then(setEvent)
       .catch((e) => {
         console.log(e);
         setEvent(null);

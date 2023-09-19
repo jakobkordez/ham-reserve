@@ -5,7 +5,6 @@ import { PrivateTag } from '@/components/private-tag';
 import { ProgressBar } from '@/components/progress-bar';
 import { Event } from '@/interfaces/event.interface';
 import { User } from '@/interfaces/user.interface';
-import { useAuthState } from '@/state/auth-state';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -62,27 +61,17 @@ export function EventComponent({ event }: EventComponentProps) {
 function AccessComponent({ event }: EventComponentProps) {
   const [usernameInput, setUsernameInput] = useState('');
   const [users, setUsers] = useState<User[]>();
-  const getAccessToken = useAuthState((state) => state.getAccessToken);
 
   useEffect(() => {
-    getAccessToken().then((token) => {
-      if (!token) return;
-      apiFunctions.getManyUsers(token, event.access).then((res) => {
-        setUsers(res.data);
-      });
-    });
-  }, [getAccessToken, event.access]);
+    apiFunctions.getManyUsers(event.access).then(setUsers).catch(console.error);
+  }, [event.access]);
 
   async function grantAccess() {
-    const token = await getAccessToken();
-    if (!token) return;
-    const user = await apiFunctions.findByUsername(
-      token,
-      usernameInput.toUpperCase(),
-    );
-    if (!user.data) return;
     try {
-      await apiFunctions.grantEventAccess(token, event._id, user.data._id);
+      const user = await apiFunctions.findByUsername(
+        usernameInput.toUpperCase(),
+      );
+      await apiFunctions.grantEventAccess(event._id, user._id);
       window.location.reload();
       setUsernameInput('');
     } catch (err) {
@@ -91,10 +80,8 @@ function AccessComponent({ event }: EventComponentProps) {
   }
 
   async function revokeAccess(userId: string) {
-    const token = await getAccessToken();
-    if (!token) return;
     try {
-      await apiFunctions.revokeEventAccess(token, event._id, userId);
+      await apiFunctions.revokeEventAccess(event._id, userId);
       window.location.reload();
     } catch (err) {
       console.error(err);
