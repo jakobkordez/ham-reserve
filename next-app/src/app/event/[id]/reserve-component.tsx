@@ -39,7 +39,7 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
     setError(undefined);
     apiFunctions
       .createReservation(event._id, {
-        forDate: date!.toISOString(),
+        forDate: date?.toISOString() ?? '',
         bands: Array.from(bands),
         modes: Array.from(modes),
       })
@@ -58,40 +58,42 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
 
   return (
     <div className="flex flex-col gap-6 rounded border border-gray-500 p-6">
-      <div className="flex flex-col gap-1">
-        <label htmlFor="date">Datum</label>
+      <div className="form-control">
+        <label className="label">
+          <span className="label-text">Datum</span>
+        </label>
         <input
           ref={dateRef}
           type="date"
           id="date"
-          className={`text-input ${
-            date ? 'border-green-600 focus-visible:outline-green-600' : ''
-          }`}
+          className={`input input-bordered ${date ? 'input-success' : ''}`}
           onChange={(e) => {
             if (!e.target.value) return setDate(undefined);
             const date = new Date(e.target.value + 'Z');
             setDate(date);
           }}
         />
-        <div className="flex flex-wrap gap-1">
+        <div className="mt-3 flex flex-wrap gap-1">
           {dates.map((dt, i) => (
-            <button
+            <input
               key={i}
-              className={`button flex-1 shadow ${
-                date?.valueOf() === dt?.valueOf() ? 'is-green' : 'is-light'
-              }`}
+              type="radio"
+              checked={date?.valueOf() === dt?.valueOf()}
               onClick={() => {
                 setDate(dt);
                 dateRef.current!.value = dt.toISOString().slice(0, 10);
               }}
-            >
-              {dt.getDate()}/{dt.getMonth() + 1}
-            </button>
+              aria-label={`${dt.getDate()}. ${dt.getMonth() + 1}.`}
+              className="btn btn-sm flex-1"
+            />
           ))}
         </div>
       </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="bands">Frekvenčna področja</label>
+
+      <div className="form-control">
+        <label className="label">
+          <span className="label-text">Frekvenčna področja</span>
+        </label>
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
           {Object.values(Band).map((band) => {
             const checked = bands.has(band);
@@ -105,30 +107,26 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
             }
 
             return (
-              <button
+              <input
                 key={band}
-                className={`button button flex items-center gap-2 shadow ${
-                  checked ? 'is-green' : 'is-light'
-                }`}
-                onClick={toggle}
-              >
-                <input
-                  tabIndex={-1}
-                  type="checkbox"
-                  id={band}
-                  name={band}
-                  value={band}
-                  checked={checked}
-                  onChange={() => toggle()}
-                />
-                <span>{band}</span>
-              </button>
+                tabIndex={-1}
+                type="checkbox"
+                id={band}
+                name={band}
+                value={band}
+                checked={checked}
+                onChange={() => toggle()}
+                aria-label={band}
+                className="btn btn-outline btn-sm"
+              />
             );
           })}
         </div>
       </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="modes">Načini</label>
+      <div className="form-control">
+        <label className="label">
+          <span className="label-text">Načini</span>
+        </label>
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
           {Object.values(Mode).map((mode) => {
             const checked = modes.has(mode);
@@ -142,40 +140,31 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
             }
 
             return (
-              <button
+              <input
                 key={mode}
-                className={`button flex items-center gap-2 shadow ${
-                  checked ? 'is-green' : 'is-light'
-                }`}
-                onClick={toggle}
-              >
-                <input
-                  tabIndex={-1}
-                  type="checkbox"
-                  id={mode}
-                  name={mode}
-                  value={mode}
-                  checked={checked}
-                  onChange={() => toggle()}
-                />
-                <span>{mode}</span>
-              </button>
+                tabIndex={-1}
+                type="checkbox"
+                id={mode}
+                name={mode}
+                value={mode}
+                checked={checked}
+                onChange={() => toggle()}
+                aria-label={mode}
+                className="btn btn-outline btn-sm"
+              />
             );
           })}
         </div>
       </div>
 
       {error && (
-        <div className="flex items-center gap-4 rounded border border-red-500 bg-red-500/10 p-4 text-red-600">
-          <FontAwesomeIcon
-            icon={faTriangleExclamation}
-            className="h-6 w-6 text-red-500"
-          />
+        <div className="alert alert-error">
+          <FontAwesomeIcon icon={faTriangleExclamation} className="h-6 w-6" />
           <span>{error[0].toUpperCase() + error.slice(1)}</span>
         </div>
       )}
 
-      <button className="button is-primary" onClick={submit}>
+      <button className="btn btn-primary" onClick={submit}>
         Rezerviraj
       </button>
     </div>

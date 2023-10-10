@@ -203,9 +203,21 @@ export const apiFunctions = {
       )
     ).data;
   },
-  getReservationsForEvent: async (eventId: string) => {
-    return (await api.get<Reservation[]>(`/events/${eventId}/reservations`))
-      .data;
+  getReservationsForEvent: async (
+    eventId: string,
+    filter?: {
+      start?: string;
+      end?: string;
+    },
+  ) => {
+    return (
+      await api.get<Reservation[]>(`/events/${eventId}/reservations`, {
+        params: {
+          start: filter?.start,
+          end: filter?.end,
+        },
+      })
+    ).data;
   },
   getReservationsForSelf: async (filter?: {
     event?: string;

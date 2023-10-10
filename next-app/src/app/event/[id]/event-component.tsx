@@ -65,7 +65,7 @@ export function EventComponent({ event }: EventComponentProps) {
         </>
       ) : (
         <div>
-          <Link href="/login" className="button is-primary">
+          <Link href="/login" className="btn btn-primary">
             Prijavi se za rezervacijo
           </Link>
         </div>

@@ -8,11 +8,11 @@ import { useEffect } from 'react';
 
 const subPages = [
   {
-    name: 'Events',
+    name: 'Dogodki',
     href: '/admin/events',
   },
   {
-    name: 'Users',
+    name: 'Uporabniki',
     href: '/admin/users',
   },
 ];
@@ -36,15 +36,13 @@ export default function AdminPageLayout({
       <div className="container flex flex-col gap-8 py-10">
         <h1 className="text-4xl font-medium">Admin Page</h1>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="tabs">
           {subPages.map(({ name, href }) => (
             <Link
               key={href}
               href={href}
-              className={`rounded-md border border-gray-300 px-5 py-2 font-medium shadow dark:border-gray-600 ${
-                pathname.startsWith(href)
-                  ? 'bg-black/10 dark:bg-white/20'
-                  : 'bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20'
+              className={`tab tab-lg tab-bordered ${
+                pathname.startsWith(href) ? 'tab-active' : ''
               }`}
             >
               {name}

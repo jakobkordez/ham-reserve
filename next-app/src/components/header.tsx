@@ -3,7 +3,7 @@
 import { Role } from '@/enums/role.enum';
 import { User } from '@/interfaces/user.interface';
 import { useAuthState } from '@/state/auth-state';
-import { useThemeState } from '@/state/theme-state';
+import { THEME_DARK, useThemeState } from '@/state/theme-state';
 import { useUserState } from '@/state/user-state';
 import { faMoon, faSun, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export function Header() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setTheme] = useState<string>(THEME_DARK);
   const toggleTheme = useThemeState((s) => s.toggleTheme);
 
   useEffect(() => {
@@ -20,17 +20,20 @@ export function Header() {
   }, []);
 
   return (
-    <div className="flex h-16 select-none justify-between bg-primary text-white shadow">
+    <div className="flex h-16 select-none justify-between border-b border-primary">
       <Link href="/" className="my-auto ml-4 text-2xl font-semibold">
         Ham Reserve
       </Link>
       <div className="flex">
-        <button className="header-button" onClick={toggleTheme}>
-          <FontAwesomeIcon
-            icon={theme === 'dark' ? faSun : faMoon}
-            className="w-4"
+        <label className="header-button swap swap-rotate">
+          <input
+            type="checkbox"
+            checked={theme === THEME_DARK}
+            onChange={toggleTheme}
           />
-        </button>
+          <FontAwesomeIcon icon={faMoon} className="swap-off h-5 w-5" />
+          <FontAwesomeIcon icon={faSun} className="swap-on h-5 w-5" />
+        </label>
         <UserHeader />
       </div>
     </div>
@@ -41,58 +44,42 @@ function UserHeader() {
   const [user, setUser] = useState<User>();
   const getUser = useUserState((s) => s.getUser);
   const logout = useAuthState((s) => s.logout);
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     getUser().then((u) => setUser(u || undefined));
   }, [getUser]);
 
   return user ? (
-    <div className="relative h-full">
-      <button
-        className="header-button flex items-center"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+    <div className="dropdown dropdown-end">
+      <label tabIndex={0} className="header-button flex items-center">
         <FontAwesomeIcon icon={faUserCircle} className="mr-2 h-5" />
         <span>{user.username.toUpperCase()}</span>
-      </button>
-      <div
-        className={`absolute right-2 z-10 mt-2 ${
-          isOpen ? '' : 'scale-0 delay-100'
-        }`}
+      </label>
+      <ul
+        tabIndex={0}
+        className="menu dropdown-content rounded-box z-[1] mr-4 mt-4 w-52 border bg-base-100 p-2 shadow"
       >
-        <div
-          className={`w-56 origin-top-right rounded-md bg-gray-100 py-2 text-black shadow-sm ring-1 ring-inset ring-primary duration-100 dark:bg-gray-700 dark:text-white ${
-            isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
-          }`}
-        >
-          <Link
-            href="/profile"
-            className="block w-full px-4 py-2 text-left hover:bg-black/5 dark:hover:bg-white/10"
-            onClick={() => setIsOpen(false)}
-          >
-            Profil
-          </Link>
-          {user.roles.includes(Role.Admin) && (
-            <Link
-              href="/admin"
-              className="block px-4 py-2 text-left text-red-500 hover:bg-black/5 dark:hover:bg-white/10"
-              onClick={() => setIsOpen(false)}
-            >
+        <li>
+          <Link href="/profile">Profil</Link>
+        </li>
+        {user.roles.includes(Role.Admin) && (
+          <li>
+            <Link href="/admin" className="text-warning">
               Admin panel
             </Link>
-          )}
+          </li>
+        )}
+        <li>
           <button
             onClick={() => {
               logout();
               window.location.reload();
             }}
-            className="block w-full px-4 py-2 text-left hover:bg-black/5 dark:hover:bg-white/10"
           >
             Odjava
           </button>
-        </div>
-      </div>
+        </li>
+      </ul>
     </div>
   ) : (
     <div className="relative h-full">

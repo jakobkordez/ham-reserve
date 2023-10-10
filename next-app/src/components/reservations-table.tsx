@@ -12,43 +12,36 @@ interface ReservationsTableProps {
 
 export function ReservationsTable({ reservations }: ReservationsTableProps) {
   return (
-    <div className="table w-full border-collapse text-left">
-      <div className="table-header-group">
-        <div className="table-row border-b-2 border-gray-500">
-          <div className="table-cell p-2">Datum</div>
-          <div className="table-cell p-2">Frekvenčna področja</div>
-          <div className="table-cell p-2">Načini</div>
-        </div>
-      </div>
-      <div className="table-row-group">
+    <table className="table">
+      <colgroup>
+        <col style={{ width: '20%' }} />
+        <col style={{ width: '50%' }} />
+        <col style={{ width: '50%' }} />
+        <col />
+        <col />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Frekvenčna področja</th>
+          <th>Načini</th>
+        </tr>
+      </thead>
+      <tbody>
         {reservations.map((reservation) => (
-          <Link
-            href={`/reservation/${reservation._id}`}
-            key={reservation._id}
-            className="table-row border-b border-gray-700 last:border-0 hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <div className="table-cell p-2">
-              {reservation.forDate.toISOString().slice(0, 10)}
-            </div>
-            <div className="table-cell p-2">
+          <tr key={reservation._id}>
+            <td>{reservation.forDate.toISOString().slice(0, 10)}</td>
+            <td>
               <div className="flex flex-wrap gap-1">
-                {reservation.bands.map((band) => (
-                  <div key={band} className="tag">
-                    {band}
-                  </div>
-                ))}
+                {reservation.bands.join(', ')}
               </div>
-            </div>
-            <div className="table-cell p-2">
+            </td>
+            <td>
               <div className="flex flex-wrap gap-1">
-                {reservation.modes.map((mode) => (
-                  <div key={mode} className="tag">
-                    {mode}
-                  </div>
-                ))}
+                {reservation.modes.join(', ')}
               </div>
-            </div>
-            <div className="table-cell p-2">
+            </td>
+            <td>
               {reservation.forDate < new Date() && (
                 <FontAwesomeIcon
                   icon={
@@ -56,17 +49,23 @@ export function ReservationsTable({ reservations }: ReservationsTableProps) {
                       ? faFileCircleCheck
                       : faFileCircleExclamation
                   }
-                  className={
-                    reservation.logSummary
-                      ? 'text-green-500'
-                      : 'text-yellow-300'
-                  }
+                  className={`h-5 w-5 ${
+                    reservation.logSummary ? 'text-success' : 'text-warning'
+                  }`}
                 />
               )}
-            </div>
-          </Link>
+            </td>
+            <td>
+              <Link
+                href={`/reservation/${reservation._id}`}
+                className="btn btn-sm"
+              >
+                Več
+              </Link>
+            </td>
+          </tr>
         ))}
-      </div>
-    </div>
+      </tbody>
+    </table>
   );
 }

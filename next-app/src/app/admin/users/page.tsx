@@ -11,8 +11,8 @@ export default function AdminUsers() {
       <div className="mb-4 flex items-center">
         <h2 className="flex-1 text-2xl font-medium">Users</h2>
 
-        <Link href="/admin/users/create">
-          <FontAwesomeIcon icon={faAdd} className="text-2xl" />
+        <Link href="/admin/users/create" className="btn btn-circle">
+          <FontAwesomeIcon icon={faAdd} />
         </Link>
       </div>
 

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -146,7 +147,13 @@ export class EventsController {
   @Get(':id/reservations')
   findReservations(
     @Param('id', MongoIdPipe) eventId: string,
+    @Query('start') start?: string,
+    @Query('end') end?: string,
   ): Promise<Reservation[]> {
-    return this.reservationsService.findAll({ eventId });
+    return this.reservationsService.findAll({
+      eventId,
+      fromDate: start ? new Date(start) : undefined,
+      toDate: end ? new Date(end) : undefined,
+    });
   }
 }

@@ -1,24 +1,29 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export const THEME_DARK = 'night';
+export const THEME_LIGHT = 'light';
+
 interface ThemeState {
-  theme: 'light' | 'dark';
+  theme: string;
   toggleTheme: () => void;
 }
 
 export const useThemeState = create(
   persist<ThemeState>(
-    (set, get) => ({
+    (set) => ({
       theme:
         typeof window !== 'undefined' &&
         window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark'
-          : 'light',
+          ? THEME_DARK
+          : THEME_LIGHT,
       toggleTheme: () =>
-        set({ theme: get().theme === 'dark' ? 'light' : 'dark' }),
+        set((state) => ({
+          theme: state.theme === THEME_DARK ? THEME_LIGHT : THEME_DARK,
+        })),
     }),
     {
-      name: 'theme-storage',
+      name: 'theme',
     },
   ),
 );

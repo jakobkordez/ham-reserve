@@ -13,14 +13,5 @@ export function ProgressBar({ start, end }: ProgressBarProps) {
     ),
   ).toFixed(1);
 
-  return (
-    <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-      <div
-        className="h-full rounded-full bg-primary"
-        style={{
-          width: `${progress}%`,
-        }}
-      />
-    </div>
-  );
+  return <progress className="progress" value={progress} max={100} />;
 }

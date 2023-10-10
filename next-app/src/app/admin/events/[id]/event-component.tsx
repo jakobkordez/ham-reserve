@@ -42,7 +42,7 @@ export function EventComponent({ event }: EventComponentProps) {
       </div>
 
       <div className="flex gap-4">
-        <Link href={`/event/${event._id}`} className="button is-primary">
+        <Link href={`/event/${event._id}`} className="btn btn-primary">
           Na stran dogodka
         </Link>
       </div>
@@ -94,45 +94,40 @@ function AccessComponent({ event }: EventComponentProps) {
 
       <div className="my-4 flex items-center gap-2">
         <input
-          className="text-input font-callsign flex-1 placeholder:font-normal placeholder:normal-case"
+          className="font-callsign input input-bordered flex-1 placeholder:font-normal placeholder:normal-case"
           value={usernameInput}
           placeholder="Dodaj uporabnika"
           onChange={(e) => setUsernameInput(e.target.value)}
         />
-        <Button onClick={grantAccess}>
+        <button className="btn btn-circle btn-primary" onClick={grantAccess}>
           <FontAwesomeIcon icon={faPlus} />
-        </Button>
+        </button>
         {/* TODO Error */}
       </div>
 
-      {users?.map((user, i) => (
-        <div
-          key={i}
-          className="flex items-center justify-between border-b py-2 last:border-0"
-        >
-          <span className="font-callsign px-3 text-lg">{user.username}</span>
-          <Button onClick={() => revokeAccess(user._id)}>
-            <FontAwesomeIcon icon={faMinus} />
-          </Button>
-        </div>
-      )) ?? <div>Loading...</div>}
+      <div className="overflow-x-auto">
+        <table className="table">
+          <colgroup>
+            <col width="100%" />
+            <col />
+          </colgroup>
+          <tbody>
+            {users?.map((user, i) => (
+              <tr key={i}>
+                <td className="font-callsign text-lg">{user.username}</td>
+                <th>
+                  <button
+                    className="btn btn-circle btn-ghost btn-sm"
+                    onClick={() => revokeAccess(user._id)}
+                  >
+                    <FontAwesomeIcon icon={faMinus} />
+                  </button>
+                </th>
+              </tr>
+            )) ?? <div>Loading...</div>}
+          </tbody>
+        </table>
+      </div>
     </div>
-  );
-}
-
-function Button({
-  children,
-  onClick,
-}: {
-  children: React.ReactNode;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      className="h-10 w-10 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
-      onClick={onClick}
-    >
-      {children}
-    </button>
   );
 }

@@ -1,0 +1,12 @@
+.header-button {
+  @apply h-full p-6 leading-none hover:bg-black/10 dark:hover:bg-white/20;
+}
+
+.font-callsign {
+  font-family: var(--callsign-font);
+  text-transform: uppercase;
+}
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';

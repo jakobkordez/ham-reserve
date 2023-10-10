@@ -45,7 +45,7 @@ export default function ReservationPage({
       {reservation === null && (
         <div className="flex flex-col items-center gap-6">
           <h1 className="text-2xl font-medium">404 - Rezervacija ne obstaja</h1>
-          <Link href="/" className="button is-primary">
+          <Link href="/" className="btn btn-primary">
             Nazaj na domačo stran
           </Link>
         </div>

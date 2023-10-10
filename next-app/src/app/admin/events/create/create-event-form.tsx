@@ -38,36 +38,42 @@ export function CreateEventForm() {
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded border border-gray-500 p-6">
-      <div className="flex flex-col gap-1">
-        <label htmlFor="callsign">Klicni znak</label>
+    <div className="flex flex-col gap-4">
+      <div className="form-control">
+        <label className="label">
+          <span className="label-text">Klicni znak</span>
+        </label>
         <input
           type="text"
           id="callsign"
-          className="text-input font-callsign"
+          className="font-callsign input input-bordered"
           placeholder="S50HQ"
           value={callsign}
           onChange={(e) => setCallsign(e.target.value)}
         />
       </div>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="description">Opis</label>
+      <div className="form-control">
+        <label className="label">
+          <span className="label-text">Opis</span>
+        </label>
         <textarea
           id="description"
-          className="text-input"
+          className="textarea textarea-bordered"
           placeholder="Opis"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
       </div>
       <div className="flex gap-4">
-        <div className="flex flex-1 flex-col gap-1">
-          <label htmlFor="fromDateTime">Od</label>
+        <div className="form-control flex-1">
+          <label className="label">
+            <span className="label-text">Od</span>
+          </label>
           <input
             type="datetime-local"
             id="fromDateTime"
-            className={`text-input ${
-              fromDateTime ? 'border-green-600 outline-green-600' : ''
+            className={`input input-bordered ${
+              fromDateTime ? 'input-success' : ''
             }`}
             onChange={(e) => {
               if (!e.target.value) return setFromDateTime(undefined);
@@ -76,15 +82,15 @@ export function CreateEventForm() {
             }}
           />
         </div>
-        <div className="flex flex-1 flex-col gap-1">
-          <label htmlFor="toDateTime">Do</label>
+        <div className="form-control flex-1">
+          <label className="label">
+            <span className="label-text">Do</span>
+          </label>
           <input
             type="datetime-local"
             id="toDateTime"
-            className={`text-input ${
-              toDateTime
-                ? 'border-green-600 focus-visible:outline-green-600'
-                : ''
+            className={`input input-bordered ${
+              toDateTime ? 'input-success' : ''
             }`}
             onChange={(e) => {
               if (!e.target.value) return setToDateTime(undefined);
@@ -94,28 +100,27 @@ export function CreateEventForm() {
           />
         </div>
       </div>
-      <div className="flex items-center gap-4 text-lg">
-        <input
-          type="checkbox"
-          id="isPrivate"
-          className="checkbox"
-          checked={isPrivate}
-          onChange={(e) => setIsPrivate(e.target.checked)}
-        />
-        <label htmlFor="isPrivate">Zasebno</label>
+
+      <div className="form-control w-32">
+        <label className="label cursor-pointer">
+          <span className="label-text">Zasebno</span>
+          <input
+            type="checkbox"
+            className="checkbox"
+            checked={isPrivate}
+            onChange={(e) => setIsPrivate(e.target.checked)}
+          />
+        </label>
       </div>
 
       {error && (
-        <div className="flex items-center gap-4 rounded border border-red-500 bg-red-500/10 p-4 text-red-600">
-          <FontAwesomeIcon
-            icon={faTriangleExclamation}
-            className="h-6 w-6 text-red-500"
-          />
+        <div className="alert alert-error">
+          <FontAwesomeIcon icon={faTriangleExclamation} className="h-6 w-6" />
           <span>{error[0].toUpperCase() + error.slice(1)}</span>
         </div>
       )}
 
-      <button className="button is-primary" onClick={submit}>
+      <button className="btn btn-primary" onClick={submit}>
         Ustvari
       </button>
     </div>

@@ -1,10 +1,13 @@
 import { apiFunctions } from '@/api';
+import AsyncLock from 'async-lock';
 import jwtDecode from 'jwt-decode';
 import secureLocalStorage from 'react-secure-storage';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-const useValidLock = create<Promise<boolean> | undefined>(() => undefined);
+// const useValidLock = create<Promise<boolean> | null>(() => null);
+// let lock: Promise<boolean> | null = null;
+const lock = new AsyncLock();
 
 export interface AuthState {
   accessToken: string | null;
@@ -27,16 +30,13 @@ export const useAuthState = create(
         return isValid ? get().accessToken : null;
       },
       isValid: async () => {
-        const currentLock = useValidLock.getState();
-        if (currentLock) return currentLock;
-
-        const newLock = new Promise<boolean>(async (resolve) => {
+        return lock.acquire<boolean>('isValid', async () => {
           const { accessToken, refreshToken } = get();
 
           if (accessToken) {
             const { exp } = jwtDecode(accessToken) as { exp: number };
             if (Date.now() < exp * 1000) {
-              resolve(true);
+              return true;
               return;
             } else set({ accessToken: null });
           }
@@ -47,8 +47,7 @@ export const useAuthState = create(
               // Try to refresh
               try {
                 set(await apiFunctions.refresh(refreshToken));
-                resolve(true);
-                return;
+                return true;
               } catch (e) {
                 set({ refreshToken: null });
               }
@@ -56,16 +55,8 @@ export const useAuthState = create(
           }
 
           set({ refreshToken: null, accessToken: null });
-          resolve(false);
+          return false;
         });
-
-        useValidLock.setState(newLock);
-
-        const res = await newLock;
-
-        useValidLock.setState(undefined);
-
-        return res;
       },
       logout: async () => {
         try {

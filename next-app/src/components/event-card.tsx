@@ -7,27 +7,42 @@ interface EventCardProps {
 
 export function EventCard({ event }: EventCardProps) {
   return (
-    <div className="flex h-full flex-col justify-between gap-3 rounded-lg bg-gray-100 px-6 py-4 shadow-md dark:bg-white/5">
-      <div>
-        <div className="font-callsign text-2xl font-medium">
-          {event.callsign}
+    <div className="card bg-base-100 flex h-full flex-col justify-between gap-3 border border-primary shadow-xl">
+      <div className="card-body">
+        <div>
+          <h1 className="font-callsign card-title mb-1 text-2xl">
+            {event.callsign}
+          </h1>
+
+          {event.description ? (
+            <p>{event.description}</p>
+          ) : (
+            <p className="font-light italic">Brez opisa</p>
+          )}
         </div>
 
-        {event.description && (
-          <div className="mt-2 text-sm opacity-80">{event.description}</div>
+        {(event.fromDateTime != undefined) !==
+          (event.toDateTime != undefined) && (
+          <div>
+            {event.fromDateTime ? 'Od' : 'Do'}:{' '}
+            {(event.fromDateTime ?? event.toDateTime!).toLocaleDateString()}
+          </div>
+        )}
+        {event.fromDateTime && event.toDateTime && (
+          <div className="mt-2">
+            <div className="flex justify-between text-sm">
+              {event.fromDateTime && (
+                <div>{event.fromDateTime.toLocaleDateString()}</div>
+              )}
+              {event.toDateTime && (
+                <div>{event.toDateTime.toLocaleDateString()}</div>
+              )}
+            </div>
+
+            <ProgressBar start={event.fromDateTime} end={event.toDateTime} />
+          </div>
         )}
       </div>
-
-      {event.fromDateTime && event.toDateTime && (
-        <div>
-          <div className="mb-1 flex justify-between text-sm">
-            <div>{event.fromDateTime.toLocaleDateString()}</div>
-            <div>{event.toDateTime.toLocaleDateString()}</div>
-          </div>
-
-          <ProgressBar start={event.fromDateTime} end={event.toDateTime} />
-        </div>
-      )}
     </div>
   );
 }

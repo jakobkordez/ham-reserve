@@ -17,10 +17,14 @@ export const dayInMs = 1000 * 60 * 60 * 24;
 
 export const dayInWeeks = ['Ned', 'Pon', 'Tor', 'Sre', 'Čet', 'Pet', 'Sob'];
 
-export function getNextNDays(n: number, event: Event) {
+export function getNextNDays(n: number, event: Event, offset: number = 0) {
   const start = Math.max(Date.now(), event.fromDateTime?.valueOf() ?? 0);
   return new Array(n)
     .fill(null)
-    .map((_, i) => new Date(Math.floor(start / dayInMs + i) * dayInMs))
-    .filter((date) => !event.toDateTime || date <= event.toDateTime);
+    .map((_, i) => new Date(Math.floor(start / dayInMs + i + offset) * dayInMs))
+    .filter(
+      (date) =>
+        (!event.toDateTime || date <= event.toDateTime) &&
+        (!event.fromDateTime || date >= event.fromDateTime),
+    );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { Header } from '@/components/header';
-import { useThemeState } from '@/state/theme-state';
+import { THEME_DARK, useThemeState } from '@/state/theme-state';
 import { Allerta, Inter } from 'next/font/google';
 import { useEffect, useState } from 'react';
 
@@ -14,7 +14,7 @@ const callsignFont = Allerta({
 const inter = Inter({ subsets: ['latin'] });
 
 export function LayoutComponent({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setTheme] = useState<string>(THEME_DARK);
 
   useEffect(() => {
     setTheme(useThemeState.getState().theme);
@@ -22,9 +22,9 @@ export function LayoutComponent({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <html lang="sl" className={theme}>
+    <html lang="sl" data-theme={theme}>
       <body
-        className={`${inter.className} ${callsignFont.variable} dark:bg-gray-900 dark:text-light dark:[color-scheme:dark]`}
+        className={`${inter.className} ${callsignFont.variable} dark:[color-scheme:dark]`}
       >
         <Header />
         <main>{children}</main>

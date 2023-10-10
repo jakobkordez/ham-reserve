@@ -6,19 +6,16 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  darkMode: 'class',
+  darkMode: ['class', '[data-theme="night"]'],
   theme: {
     container: {
       center: true,
       padding: '2rem',
     },
-    extend: {
-      colors: {
-        primary: '#2596be',
-        light: '#d1d5db',
-      },
-    },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
+  daisyui: {
+    themes: ['light', 'night'],
+  },
 };
 export default config;
