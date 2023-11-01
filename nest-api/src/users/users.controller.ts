@@ -106,6 +106,16 @@ export class UsersController {
     return this.usersService.findMany(ids);
   }
 
+  @Patch('me')
+  async updateSelf(
+    @RequestUser() userReq: UserTokenData,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    const user = await this.usersService.update(userReq.id, updateUserDto);
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
   @Roles(Role.Admin)
   @Patch(':id')
   async update(
@@ -113,6 +123,17 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
     const user = await this.usersService.update(id, updateUserDto);
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  @Roles(Role.Admin)
+  @Patch(':id/password')
+  async updatePassword(
+    @Param('id', MongoIdPipe) id: string,
+    @Body('password') password: string,
+  ): Promise<User> {
+    const user = await this.usersService.updatePassword(id, password, true);
     if (!user) throw new NotFoundException('User not found');
     return user;
   }

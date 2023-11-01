@@ -20,6 +20,11 @@ export class User {
   password: string;
 
   @Prop({
+    default: false,
+  })
+  passwordResetRequired: boolean;
+
+  @Prop({
     default: [Role.User],
     type: [
       { type: String, enum: [Role.User.toString(), Role.Admin.toString()] },
@@ -38,7 +43,7 @@ export class User {
 
   @Prop({
     transform: () => undefined,
-    set: (value: string) => bcrypt.hashSync(value, 10),
+    set: (value: string) => (value ? bcrypt.hashSync(value, 10) : undefined),
   })
   auth: string;
 

@@ -40,6 +40,16 @@ export class UsersService {
       .exec();
   }
 
+  async updatePassword(
+    id: string,
+    password: string,
+    passwordResetRequired: boolean,
+  ): Promise<User> {
+    return this.userModel
+      .findByIdAndUpdate(id, { password, passwordResetRequired }, { new: true })
+      .exec();
+  }
+
   setDeleted(id: string): Promise<User> {
     return this.userModel
       .findByIdAndUpdate(id, { $set: { isDeleted: true } }, { new: true })
