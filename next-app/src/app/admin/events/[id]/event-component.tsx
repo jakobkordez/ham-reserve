@@ -1,6 +1,7 @@
 'use client';
 
 import { apiFunctions } from '@/api';
+import { Loading } from '@/components/loading';
 import { PrivateTag } from '@/components/private-tag';
 import { ProgressBar } from '@/components/progress-bar';
 import { Event } from '@/interfaces/event.interface';
@@ -105,29 +106,33 @@ function AccessComponent({ event }: EventComponentProps) {
         {/* TODO Error */}
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="table">
-          <colgroup>
-            <col width="100%" />
-            <col />
-          </colgroup>
-          <tbody>
-            {users?.map((user, i) => (
-              <tr key={i}>
-                <td className="font-callsign text-lg">{user.username}</td>
-                <th>
-                  <button
-                    className="btn btn-circle btn-ghost btn-sm"
-                    onClick={() => revokeAccess(user._id)}
-                  >
-                    <FontAwesomeIcon icon={faMinus} />
-                  </button>
-                </th>
-              </tr>
-            )) ?? <div>Loading...</div>}
-          </tbody>
-        </table>
-      </div>
+      {!users ? (
+        <Loading />
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="table">
+            <colgroup>
+              <col width="100%" />
+              <col />
+            </colgroup>
+            <tbody>
+              {users?.map((user, i) => (
+                <tr key={i}>
+                  <td className="font-callsign text-lg">{user.username}</td>
+                  <th>
+                    <button
+                      className="btn btn-circle btn-ghost btn-sm"
+                      onClick={() => revokeAccess(user._id)}
+                    >
+                      <FontAwesomeIcon icon={faMinus} />
+                    </button>
+                  </th>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

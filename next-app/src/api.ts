@@ -53,6 +53,15 @@ export const apiFunctions = {
       })
     ).data;
   },
+  updateSelfPassword: async (oldPassword: string, newPassword: string) => {
+    return (
+      await api.patch<User>(
+        '/auth/password',
+        { oldPassword, newPassword },
+        { headers: await getAuthHeader() },
+      )
+    ).data;
+  },
 
   // Users
   createUser: async (user: CreateUserDto) => {
@@ -100,6 +109,17 @@ export const apiFunctions = {
   updateUser: async (id: string, user: User) => {
     return (
       await api.patch<User>(`/users/${id}`, user, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
+  },
+  updateSelf: async (user: {
+    name?: string;
+    email?: string;
+    phone?: string;
+  }) => {
+    return (
+      await api.patch<User>('/users/me', user, {
         headers: await getAuthHeader(),
       })
     ).data;

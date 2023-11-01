@@ -1,6 +1,7 @@
 'use client';
 
 import { apiFunctions } from '@/api';
+import { Loading } from '@/components/loading';
 import { Role } from '@/enums/role.enum';
 import { User } from '@/interfaces/user.interface';
 import { faCrown, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -32,7 +33,7 @@ export function UsersList() {
     getUsers();
   }, []);
 
-  if (!users || !me) return <div>Loading...</div>;
+  if (!users || !me) return <Loading />;
 
   return (
     <>
@@ -71,6 +72,8 @@ export function UsersList() {
                   >
                     <FontAwesomeIcon
                       icon={faCrown}
+                      height={20}
+                      width={20}
                       className="h-5 w-5 leading-none"
                     />
                   </button>
@@ -87,6 +90,8 @@ export function UsersList() {
                   >
                     <FontAwesomeIcon
                       icon={faTrash}
+                      height={20}
+                      width={20}
                       className="h-5 w-5 leading-none"
                     />
                   </button>

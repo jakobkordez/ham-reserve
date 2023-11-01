@@ -65,7 +65,10 @@ export function EventComponent({ event }: EventComponentProps) {
         </>
       ) : (
         <div>
-          <Link href="/login" className="btn btn-primary">
+          <Link
+            href={`/login?redirect=/event/${event._id}`}
+            className="btn btn-primary"
+          >
             Prijavi se za rezervacijo
           </Link>
         </div>

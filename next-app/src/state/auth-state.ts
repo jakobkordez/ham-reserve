@@ -23,7 +23,6 @@ export const useAuthState = create(
     (set, get) => ({
       accessToken: null,
       refreshToken: null,
-      isValidLock: null,
 
       getAccessToken: async () => {
         const isValid = await get().isValid();

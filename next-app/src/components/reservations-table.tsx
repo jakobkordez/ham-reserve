@@ -50,7 +50,9 @@ export function ReservationsTable({ reservations }: ReservationsTableProps) {
                       : faFileCircleExclamation
                   }
                   className={`h-5 w-5 ${
-                    reservation.logSummary ? 'text-success' : 'text-warning'
+                    reservation.logSummary
+                      ? 'text-green-400'
+                      : 'text-orange-300'
                   }`}
                 />
               )}

@@ -1,10 +1,13 @@
 import { CurrentEvents } from '@/components/current-events';
 import { PrivateEvents } from '@/components/private-events';
+import { ResetPasswordAlert } from '@/components/reset_password_alert';
 import React from 'react';
 
 export default function Home() {
   return (
     <div className="container flex flex-col gap-10 py-8">
+      <ResetPasswordAlert />
+
       <CurrentEvents />
 
       <PrivateEvents />

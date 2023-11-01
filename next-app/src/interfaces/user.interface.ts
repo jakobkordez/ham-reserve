@@ -7,4 +7,5 @@ export interface User {
   createdAt: Date;
   isDeleted: boolean;
   roles: string[];
+  passwordResetRequired: boolean;
 }

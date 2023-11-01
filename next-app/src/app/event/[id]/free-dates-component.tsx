@@ -18,15 +18,18 @@ export function FreeDatesComponent({ event }: { event: Event }) {
   const bands = Object.values(Band).map((val) => val.toString());
   const dates = getNextNDays(7, event, offset);
 
+  const start = dates[0]?.toISOString();
+  const end = dates[dates.length - 1]?.toISOString();
+
   useEffect(() => {
     apiFunctions
       .getReservationsForEvent(event._id, {
-        start: dates[0]?.toISOString(),
-        end: dates[dates.length - 1]?.toISOString(),
+        start,
+        end,
       })
       .then(setReservations)
       .catch(console.error);
-  }, [event._id, dates]);
+  }, [event._id, start, end]);
 
   const freeTable = bands.map(() => dates.map(() => true));
 

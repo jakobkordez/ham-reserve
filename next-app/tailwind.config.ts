@@ -1,21 +1,27 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   darkMode: ['class', '[data-theme="night"]'],
   theme: {
     container: {
       center: true,
       padding: '2rem',
+      screens: {
+        DEFAULT: '100%',
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+      },
     },
   },
   plugins: [require('daisyui')],
   daisyui: {
-    themes: ['light', 'night'],
+    logs: false,
+    darkTheme: 'night',
+    themes: ['lemonade', 'night'],
   },
 };
+
 export default config;

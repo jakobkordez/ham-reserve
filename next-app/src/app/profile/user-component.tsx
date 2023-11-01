@@ -3,18 +3,16 @@
 import { apiFunctions } from '@/api';
 import { ReservationsTable } from '@/components/reservations-table';
 import { Reservation } from '@/interfaces/reservation.interface';
-import { User } from '@/interfaces/user.interface';
 import { useUserState } from '@/state/user-state';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export function UserComponent() {
-  const getUser = useUserState((s) => s.getUser);
-  const [user, setUser] = useState<User>();
+  const [user, getUser] = useUserState((s) => [s.user, s.getUser]);
 
   useEffect(() => {
-    getUser().then((u) => {
+    getUser(true).then((u) => {
       if (!u) return window.location.replace('/login');
-      setUser(u);
     });
   }, [getUser]);
 
@@ -22,14 +20,22 @@ export function UserComponent() {
 
   return (
     <>
-      <div className="flex flex-col gap-2">
-        <div className="text-3xl">{user.name}</div>
-        <div className="font-callsign text-2xl">{user.username}</div>
+      <div className="flex gap-2">
+        <div className="flex flex-1 flex-col gap-2">
+          <div className="text-3xl">{user.name}</div>
+          <div className="font-callsign text-2xl">{user.username}</div>
 
-        <div>
-          <div>E-mail: {user.email ?? '/'}</div>
-          <div>Phone: {user.phone ?? '/'}</div>
+          <div>
+            <div>E-mail: {user.email ?? '/'}</div>
+            <div>Phone: {user.phone ?? '/'}</div>
+          </div>
         </div>
+        <Link
+          href="/profile/edit"
+          className="btn btn-primary btn-sm self-start"
+        >
+          Uredi profil
+        </Link>
       </div>
 
       <MyReservations />

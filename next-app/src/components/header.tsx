@@ -1,7 +1,6 @@
 'use client';
 
 import { Role } from '@/enums/role.enum';
-import { User } from '@/interfaces/user.interface';
 import { useAuthState } from '@/state/auth-state';
 import { THEME_DARK, useThemeState } from '@/state/theme-state';
 import { useUserState } from '@/state/user-state';
@@ -31,8 +30,18 @@ export function Header() {
             checked={theme === THEME_DARK}
             onChange={toggleTheme}
           />
-          <FontAwesomeIcon icon={faMoon} className="swap-off h-5 w-5" />
-          <FontAwesomeIcon icon={faSun} className="swap-on h-5 w-5" />
+          <FontAwesomeIcon
+            icon={faMoon}
+            width={20}
+            height={20}
+            className="swap-off h-5 w-5"
+          />
+          <FontAwesomeIcon
+            icon={faSun}
+            width={20}
+            height={20}
+            className="swap-on h-5 w-5"
+          />
         </label>
         <UserHeader />
       </div>
@@ -41,45 +50,63 @@ export function Header() {
 }
 
 function UserHeader() {
-  const [user, setUser] = useState<User>();
-  const getUser = useUserState((s) => s.getUser);
+  const [isOpen, setIsOpen] = useState(false);
+  const [user, getUser] = useUserState((s) => [s.user, s.getUser]);
   const logout = useAuthState((s) => s.logout);
 
   useEffect(() => {
-    getUser().then((u) => setUser(u || undefined));
+    getUser();
   }, [getUser]);
 
   return user ? (
-    <div className="dropdown dropdown-end">
-      <label tabIndex={0} className="header-button flex items-center">
-        <FontAwesomeIcon icon={faUserCircle} className="mr-2 h-5" />
-        <span>{user.username.toUpperCase()}</span>
-      </label>
-      <ul
-        tabIndex={0}
-        className="menu dropdown-content rounded-box z-[1] mr-4 mt-4 w-52 border bg-base-100 p-2 shadow"
+    <div className="relative">
+      <label
+        className="header-button flex items-center gap-2"
+        onClick={() => setIsOpen(!isOpen)}
       >
-        <li>
-          <Link href="/profile">Profil</Link>
-        </li>
-        {user.roles.includes(Role.Admin) && (
+        <FontAwesomeIcon
+          icon={faUserCircle}
+          width={20}
+          height={20}
+          className="h-5 w-5"
+        />
+        <span>{user.username}</span>
+      </label>
+
+      <div
+        className={`absolute right-2 top-full z-[1] pt-4 ${
+          isOpen ? '' : 'hidden'
+        }`}
+      >
+        <ul className="menu flex w-60 flex-col gap-1 rounded-xl bg-base-100 p-2 text-base-content shadow-md">
           <li>
-            <Link href="/admin" className="text-warning">
-              Admin panel
+            <Link href="/profile" onClick={() => setIsOpen(false)}>
+              Profil
             </Link>
           </li>
-        )}
-        <li>
-          <button
-            onClick={() => {
-              logout();
-              window.location.reload();
-            }}
-          >
-            Odjava
-          </button>
-        </li>
-      </ul>
+          {user.roles.includes(Role.Admin) && (
+            <li>
+              <Link
+                href="/admin"
+                className="btn-warning"
+                onClick={() => setIsOpen(false)}
+              >
+                Admin panel
+              </Link>
+            </li>
+          )}
+          <li>
+            <button
+              onClick={() => {
+                logout();
+                window.location.reload();
+              }}
+            >
+              Odjava
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
   ) : (
     <div className="relative h-full">

@@ -75,17 +75,18 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
         />
         <div className="mt-3 flex flex-wrap gap-1">
           {dates.map((dt, i) => (
-            <input
+            <button
               key={i}
-              type="radio"
-              checked={date?.valueOf() === dt?.valueOf()}
               onClick={() => {
                 setDate(dt);
                 dateRef.current!.value = dt.toISOString().slice(0, 10);
               }}
-              aria-label={`${dt.getDate()}. ${dt.getMonth() + 1}.`}
-              className="btn btn-sm flex-1"
-            />
+              className={`btn btn-sm flex-1 ${
+                date?.valueOf() === dt?.valueOf() ? 'btn-primary' : ''
+              }`}
+            >
+              {dt.getDate()}. {dt.getMonth() + 1}.
+            </button>
           ))}
         </div>
       </div>

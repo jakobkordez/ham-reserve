@@ -12,7 +12,12 @@ export default function AdminUsers() {
         <h2 className="flex-1 text-2xl font-medium">Users</h2>
 
         <Link href="/admin/users/create" className="btn btn-circle">
-          <FontAwesomeIcon icon={faAdd} />
+          <FontAwesomeIcon
+            icon={faAdd}
+            width={20}
+            height={20}
+            className="h-5 w-5"
+          />
         </Link>
       </div>
 
