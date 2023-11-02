@@ -60,21 +60,25 @@ export function UsersList() {
                   <div className="text-sm opacity-80">Phone: {user.phone}</div>
                 </td>
                 <td>
-                  <button
+                  {/* <button
                     className={`btn btn-circle btn-warning btn-outline h-14 w-14 border-0 ${
                       user.roles.includes(Role.Admin)
                         ? '!text-warning'
                         : '!text-gray-500'
                     }`}
                     disabled={user._id === me?._id}
-                  >
-                    <FontAwesomeIcon
-                      icon={faCrown}
-                      height={20}
-                      width={20}
-                      className="h-5 w-5 leading-none"
-                    />
-                  </button>
+                  > */}
+                  <FontAwesomeIcon
+                    icon={faCrown}
+                    height={20}
+                    width={20}
+                    className={`h-5 w-5 leading-none ${
+                      user.roles.includes(Role.Admin)
+                        ? 'text-amber-500'
+                        : 'text-gray-400'
+                    }`}
+                  />
+                  {/* </button> */}
                 </td>
                 <td>
                   <button
