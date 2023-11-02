@@ -6,7 +6,7 @@ import { Mode } from '@/enums/mode.enum';
 import { Event } from '@/interfaces/event.interface';
 import { User } from '@/interfaces/user.interface';
 import { useUserState } from '@/state/user-state';
-import { getNextNDays } from '@/util/date.util';
+import { getNextNDays, getUTCDMString } from '@/util/date.util';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState } from 'react';
@@ -85,7 +85,7 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
                 date?.valueOf() === dt?.valueOf() ? 'btn-primary' : ''
               }`}
             >
-              {dt.getDate()}. {dt.getMonth() + 1}.
+              {getUTCDMString(dt)}
             </button>
           ))}
         </div>

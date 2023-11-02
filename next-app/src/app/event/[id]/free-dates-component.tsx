@@ -2,7 +2,13 @@
 import { apiFunctions } from '@/api';
 import { Event } from '@/interfaces/event.interface';
 import { Reservation } from '@/interfaces/reservation.interface';
-import { dayInMs, dayInWeeks, getNextNDays } from '@/util/date.util';
+import {
+  dayInMs,
+  dayInWeeks,
+  getNextNDays,
+  getUTCDMString,
+  getUTCDateString,
+} from '@/util/date.util';
 import { useEffect, useState } from 'react';
 import { Band } from '@/enums/band.enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,6 +28,7 @@ export function FreeDatesComponent({ event }: { event: Event }) {
   const end = dates[dates.length - 1]?.toISOString();
 
   useEffect(() => {
+    setReservations(undefined);
     apiFunctions
       .getReservationsForEvent(event._id, {
         start,
@@ -31,7 +38,9 @@ export function FreeDatesComponent({ event }: { event: Event }) {
       .catch(console.error);
   }, [event._id, start, end]);
 
-  const freeTable = bands.map(() => dates.map(() => true));
+  const freeTable = bands.map(() =>
+    dates.map<boolean | null>(() => (reservations == undefined ? null : true)),
+  );
 
   for (const reservation of reservations ?? []) {
     const forDateDay = reservation.forDate.valueOf() / dayInMs;
@@ -56,8 +65,10 @@ export function FreeDatesComponent({ event }: { event: Event }) {
         </button>
         <div className="join-item flex w-full bg-base-200">
           <div className="m-auto">
-            {dates[0]?.toLocaleDateString('sl')} -{' '}
-            {dates[dates.length - 1]?.toLocaleDateString('sl')}
+            {dates[0] ? getUTCDateString(dates[0]) : ''} -{' '}
+            {dates[dates.length - 1]
+              ? getUTCDateString(dates[dates.length - 1])
+              : ''}
           </div>
         </div>
         <button
@@ -85,9 +96,7 @@ export function FreeDatesComponent({ event }: { event: Event }) {
             {dates.map((date, i) => (
               <th key={i} className="px-3">
                 <div>{dayInWeeks[date.getUTCDay()]}</div>
-                <div>
-                  {date.getUTCDate()}. {date.getUTCMonth() + 1}.
-                </div>
+                <div>{getUTCDMString(date)}</div>
               </th>
             ))}
           </tr>
@@ -105,7 +114,11 @@ export function FreeDatesComponent({ event }: { event: Event }) {
                     className={`m-auto h-3 w-full${
                       i > 0 ? '' : ' rounded-l-full'
                     }${i == dates.length - 1 ? ' rounded-r-full' : ''} ${
-                      isFree ? 'bg-green-500' : 'bg-red-500'
+                      isFree == null
+                        ? 'bg-base-200'
+                        : isFree
+                        ? 'bg-green-500/90'
+                        : 'bg-red-500/90'
                     }`}
                   />
                 </td>

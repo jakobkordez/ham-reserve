@@ -1,4 +1,5 @@
 import { Reservation } from '@/interfaces/reservation.interface';
+import { getUTCDateString } from '@/util/date.util';
 import {
   faFileCircleCheck,
   faFileCircleExclamation,
@@ -30,7 +31,7 @@ export function ReservationsTable({ reservations }: ReservationsTableProps) {
       <tbody>
         {reservations.map((reservation) => (
           <tr key={reservation._id}>
-            <td>{reservation.forDate.toISOString().slice(0, 10)}</td>
+            <td>{getUTCDateString(reservation.forDate)}</td>
             <td>
               <div className="flex flex-wrap gap-1">
                 {reservation.bands.join(', ')}

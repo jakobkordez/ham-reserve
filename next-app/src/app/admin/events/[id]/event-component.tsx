@@ -6,6 +6,7 @@ import { PrivateTag } from '@/components/private-tag';
 import { ProgressBar } from '@/components/progress-bar';
 import { Event } from '@/interfaces/event.interface';
 import { User } from '@/interfaces/user.interface';
+import { getUTCString } from '@/util/date.util';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -34,8 +35,8 @@ export function EventComponent({ event }: EventComponentProps) {
         {event.fromDateTime && event.toDateTime && (
           <div className="mt-4">
             <div className="mb-2 flex justify-between">
-              <div>{event.fromDateTime.toLocaleString()}</div>
-              <div>{event.toDateTime.toLocaleString()}</div>
+              <div>{getUTCString(event.fromDateTime)}</div>
+              <div>{getUTCString(event.toDateTime)}</div>
             </div>
             <ProgressBar start={event.fromDateTime} end={event.toDateTime} />
           </div>

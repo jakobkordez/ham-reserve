@@ -1,5 +1,6 @@
 import { apiFunctions } from '@/api';
 import AsyncLock from 'async-lock';
+import { AxiosError } from 'axios';
 import jwtDecode from 'jwt-decode';
 import secureLocalStorage from 'react-secure-storage';
 import { create } from 'zustand';
@@ -36,7 +37,6 @@ export const useAuthState = create(
             const { exp } = jwtDecode(accessToken) as { exp: number };
             if (Date.now() < exp * 1000) {
               return true;
-              return;
             } else set({ accessToken: null });
           }
 
@@ -48,12 +48,12 @@ export const useAuthState = create(
                 set(await apiFunctions.refresh(refreshToken));
                 return true;
               } catch (e) {
-                set({ refreshToken: null });
+                if (e instanceof AxiosError && e.response?.status === 401)
+                  set({ refreshToken: null });
               }
             }
           }
 
-          set({ refreshToken: null, accessToken: null });
           return false;
         });
       },

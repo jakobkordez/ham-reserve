@@ -11,6 +11,7 @@ import { User } from '@/interfaces/user.interface';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useUserState } from '@/state/user-state';
+import { Role } from '@/enums/role.enum';
 
 interface EventComponentProps {
   event: Event;
@@ -27,12 +28,15 @@ export function EventComponent({ event }: EventComponentProps) {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <div className="flex flex-col items-start gap-2">
-          <h1 className="font-callsign text-4xl font-medium">
-            {event.callsign}
-          </h1>
-          <p className="opacity-90">{event.description}</p>
-          {event.isPrivate && <PrivateTag />}
+        <div className="flex justify-between">
+          <div className="flex flex-col items-start gap-2">
+            <h1 className="font-callsign text-4xl font-medium">
+              {event.callsign}
+            </h1>
+            <p className="opacity-90">{event.description}</p>
+            {event.isPrivate && <PrivateTag />}
+          </div>
+          <EditButton id={event._id} />
         </div>
 
         {event.fromDateTime && event.toDateTime && (
@@ -74,5 +78,18 @@ export function EventComponent({ event }: EventComponentProps) {
         </div>
       )}
     </div>
+  );
+}
+
+function EditButton({ id }: { id: string }) {
+  const user = useUserState((s) => s.user);
+  console.log(user);
+
+  if (!user || !user.roles.includes(Role.Admin)) return null;
+
+  return (
+    <Link href={`/admin/events/${id}`} className="btn btn-warning btn-sm">
+      Uredi
+    </Link>
   );
 }

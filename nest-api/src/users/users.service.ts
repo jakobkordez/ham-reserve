@@ -12,7 +12,10 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
-    const user = new this.userModel(createUserDto);
+    const user = new this.userModel({
+      ...createUserDto,
+      passwordResetRequired: true,
+    });
     return user.save();
   }
 

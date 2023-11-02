@@ -13,5 +13,11 @@ export function ProgressBar({ start, end }: ProgressBarProps) {
     ),
   ).toFixed(1);
 
-  return <progress className="progress" value={progress} max={100} />;
+  return (
+    <progress
+      className="progress progress-primary"
+      value={progress}
+      max={100}
+    />
+  );
 }

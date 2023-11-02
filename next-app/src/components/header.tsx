@@ -2,29 +2,28 @@
 
 import { Role } from '@/enums/role.enum';
 import { useAuthState } from '@/state/auth-state';
-import { THEME_DARK, useThemeState } from '@/state/theme-state';
 import { useUserState } from '@/state/user-state';
-import { faMoon, faSun, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export function Header() {
-  const [theme, setTheme] = useState<string>(THEME_DARK);
-  const toggleTheme = useThemeState((s) => s.toggleTheme);
+  // const [theme, setTheme] = useState<string>(THEME_DARK);
+  // const toggleTheme = useThemeState((s) => s.toggleTheme);
 
-  useEffect(() => {
-    setTheme(useThemeState.getState().theme);
-    useThemeState.subscribe((s) => setTheme(s.theme));
-  }, []);
+  // useEffect(() => {
+  //   setTheme(useThemeState.getState().theme);
+  //   useThemeState.subscribe((s) => setTheme(s.theme));
+  // }, []);
 
   return (
-    <div className="flex h-16 select-none justify-between border-b border-primary">
+    <div className="flex h-16 select-none justify-between bg-primary text-primary-content shadow-md dark:border-b dark:border-primary">
       <Link href="/" className="my-auto ml-4 text-2xl font-semibold">
         Ham Reserve
       </Link>
       <div className="flex">
-        <label className="header-button swap swap-rotate">
+        {/* <label className="header-button swap-rotate swap">
           <input
             type="checkbox"
             checked={theme === THEME_DARK}
@@ -42,7 +41,7 @@ export function Header() {
             height={20}
             className="swap-on h-5 w-5"
           />
-        </label>
+        </label> */}
         <UserHeader />
       </div>
     </div>
@@ -74,11 +73,12 @@ function UserHeader() {
       </label>
 
       <div
-        className={`absolute right-2 top-full z-[1] pt-4 ${
+        className={`absolute right-2 top-full z-[1] pt-1 ${
           isOpen ? '' : 'hidden'
         }`}
       >
-        <ul className="menu flex w-60 flex-col gap-1 rounded-xl bg-base-100 p-2 text-base-content shadow-md">
+        <div className="fixed inset-0" onClick={() => setIsOpen(false)} />
+        <ul className="menu flex w-60 flex-col gap-1 rounded-xl bg-base-100 p-2 text-base-content shadow-md dark:bg-base-200">
           <li>
             <Link href="/profile" onClick={() => setIsOpen(false)}>
               Profil

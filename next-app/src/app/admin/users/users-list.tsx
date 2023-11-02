@@ -50,10 +50,8 @@ export function UsersList() {
               <tr key={user._id}>
                 <td className="my-auto flex-1">
                   <div className="text-xl">
-                    <span className="font-callsign">
-                      {user.username.toUpperCase()}
-                    </span>{' '}
-                    - {user.name}
+                    <span className="font-callsign">{user.username}</span> -{' '}
+                    {user.name}
                   </div>{' '}
                   <div className="text-xs opacity-80">{user._id}</div>
                 </td>
@@ -115,6 +113,17 @@ export function UsersList() {
               type="button"
               className="btn btn-error"
               // onClick={onConfirm}
+              onClick={() => {
+                apiFunctions
+                  .deleteUser(deleteUser!._id)
+                  .then(() => {
+                    getUsers();
+                    dialogRef.current?.close();
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+              }}
             >
               Izbriši
             </button>
@@ -122,7 +131,7 @@ export function UsersList() {
               <button
                 type="button"
                 className="btn"
-                // onClick={onCancel}
+                onClick={() => dialogRef.current?.close()}
               >
                 Prekliči
               </button>

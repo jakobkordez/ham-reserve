@@ -3,6 +3,7 @@
 import { apiFunctions } from '@/api';
 import { PrivateTag } from '@/components/private-tag';
 import { Event } from '@/interfaces/event.interface';
+import { getUTCString } from '@/util/date.util';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -33,8 +34,13 @@ export function EventsList() {
               </td>
 
               <td className="flex-1 text-sm opacity-80">
-                <div>Od: {event.fromDateTime?.toLocaleDateString() ?? '/'}</div>
-                <div>Do: {event.toDateTime?.toLocaleDateString() ?? '/'}</div>
+                <div>
+                  Od:{' '}
+                  {event.fromDateTime ? getUTCString(event.fromDateTime) : '/'}
+                </div>
+                <div>
+                  Do: {event.toDateTime ? getUTCString(event.toDateTime) : '/'}
+                </div>
               </td>
 
               <th>

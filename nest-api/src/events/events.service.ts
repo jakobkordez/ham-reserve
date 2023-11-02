@@ -21,15 +21,17 @@ export class EventsService {
   }
 
   findCurrent(): Promise<Event[]> {
-    const now = new Date();
+    const now = Date.now();
+    const from = new Date(now - 1000 * 60 * 60 * 24 * 7);
+    const to = new Date(now + 1000 * 60 * 60 * 24 * 7);
     return this.eventModel
       .find({
         $and: [
           {
-            $or: [{ fromDateTime: [null] }, { fromDateTime: { $lte: now } }],
+            $or: [{ fromDateTime: [null] }, { fromDateTime: { $lte: to } }],
           },
           {
-            $or: [{ toDateTime: [null] }, { toDateTime: { $gte: now } }],
+            $or: [{ toDateTime: [null] }, { toDateTime: { $gte: from } }],
           },
         ],
         $nor: [{ isDeleted: true }, { isPrivate: true }],

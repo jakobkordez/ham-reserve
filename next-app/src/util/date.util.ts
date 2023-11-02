@@ -1,16 +1,32 @@
 import { Event } from '@/interfaces/event.interface';
 
-export function getUTCString(dt: Date) {
-  function pad(num: number) {
-    return num < 10 ? '0' + num : num;
-  }
+function pad(num: number) {
+  return num < 10 ? '0' + num : num;
+}
 
+export function getUTCDMString(dt: Date) {
+  const month = pad(dt.getUTCMonth() + 1);
+  const date = pad(dt.getUTCDate());
+  return `${date}. ${month}.`;
+}
+
+export function getUTCDateString(dt: Date) {
   const year = dt.getUTCFullYear();
   const month = pad(dt.getUTCMonth() + 1);
   const date = pad(dt.getUTCDate());
+  return `${date}. ${month}. ${year}`;
+}
+
+export function getUTCTimeString(dt: Date) {
   const hour = pad(dt.getUTCHours());
   const minute = pad(dt.getUTCMinutes());
-  return `${year}-${month}-${date} ${hour}:${minute} UTC`;
+  return `${hour}:${minute}`;
+}
+
+export function getUTCString(dt: Date) {
+  const date = getUTCDateString(dt);
+  const time = getUTCTimeString(dt);
+  return `${date} ${time} UTC`;
 }
 
 export const dayInMs = 1000 * 60 * 60 * 24;

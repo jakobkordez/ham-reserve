@@ -4,7 +4,7 @@ import { apiFunctions } from '@/api';
 import { Event } from '@/interfaces/event.interface';
 import { LogSummary } from '@/interfaces/log-summary.interface';
 import { Reservation } from '@/interfaces/reservation.interface';
-import { getUTCString } from '@/util/date.util';
+import { getUTCDateString, getUTCString } from '@/util/date.util';
 import {
   faFileCircleCheck,
   faFileCircleExclamation,
@@ -27,7 +27,7 @@ export function ReservationComponent({
         <h1 className="font-callsign text-3xl">{event.callsign}</h1>
 
         <div className="flex flex-col gap-1">
-          <div>Datum: {reservation.forDate.toISOString().slice(0, 10)}</div>
+          <div>Datum: {getUTCDateString(reservation.forDate)}</div>
           <div>Frekvenčni pasovi: {reservation.bands.join(', ')}</div>
           <div>Način dela: {reservation.modes.join(', ')}</div>
         </div>
