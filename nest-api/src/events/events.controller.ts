@@ -124,12 +124,17 @@ export class EventsController {
     });
 
     const bandSet = new Set(createReservationDto.bands);
+    const modes = new Set(createReservationDto.modes);
     for (const r of reservations) {
-      for (const b of r.bands) {
-        if (bandSet.has(b)) {
-          errors.push(
-            `Band ${b} is already reserved for ${forDate.toISOString()}`,
-          );
+      for (const m of r.modes) {
+        if (modes.has(m)) {
+          for (const b of r.bands) {
+            if (bandSet.has(b)) {
+              errors.push(
+                `Mode ${m} on band ${b} is already reserved for ${forDate.toISOString()}`,
+              );
+            }
+          }
         }
       }
     }

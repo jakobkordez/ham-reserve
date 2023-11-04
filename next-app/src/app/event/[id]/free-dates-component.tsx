@@ -55,7 +55,7 @@ export function FreeDatesComponent({ event }: { event: Event }) {
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div>
       <div className="join mb-2 w-full rounded-full shadow-md">
         <button
           className="btn btn-circle join-item btn-sm"
@@ -79,54 +79,56 @@ export function FreeDatesComponent({ event }: { event: Event }) {
         </button>
       </div>
 
-      <table className="table">
-        <colgroup>
-          <col style={{ width: 1 / 8 }} />
-          <col style={{ width: 1 / 8 }} />
-          <col style={{ width: 1 / 8 }} />
-          <col style={{ width: 1 / 8 }} />
-          <col style={{ width: 1 / 8 }} />
-          <col style={{ width: 1 / 8 }} />
-          <col style={{ width: 1 / 8 }} />
-          <col style={{ width: 1 / 8 }} />
-        </colgroup>
-        <thead>
-          <tr>
-            <td />
-            {dates.map((date, i) => (
-              <th key={i} className="px-3">
-                <div>{dayInWeeks[date.getUTCDay()]}</div>
-                <div>{getUTCDMString(date)}</div>
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          {Object.values(Band).map((band, bi) => (
-            <tr key={band}>
-              <th key={band} className="px-3 py-2">
-                {band}
-              </th>
-              {freeTable[bi].map((isFree, i) => (
-                <td key={i} className="p-px">
-                  <div
-                    className={`m-auto h-3 w-full${
-                      i > 0 ? '' : ' rounded-l-full'
-                    }${i == dates.length - 1 ? ' rounded-r-full' : ''} ${
-                      isFree == null
-                        ? 'bg-base-200'
-                        : isFree
-                        ? 'bg-green-500/90'
-                        : 'bg-red-500/90'
-                    }`}
-                  />
-                </td>
+      <div className="overflow-x-auto">
+        <table className="table">
+          <colgroup>
+            <col style={{ width: 1 / 8 }} />
+            <col style={{ width: 1 / 8 }} />
+            <col style={{ width: 1 / 8 }} />
+            <col style={{ width: 1 / 8 }} />
+            <col style={{ width: 1 / 8 }} />
+            <col style={{ width: 1 / 8 }} />
+            <col style={{ width: 1 / 8 }} />
+            <col style={{ width: 1 / 8 }} />
+          </colgroup>
+          <thead>
+            <tr>
+              <td />
+              {dates.map((date, i) => (
+                <th key={i} className="px-3">
+                  <div>{dayInWeeks[date.getUTCDay()]}</div>
+                  <div>{getUTCDMString(date)}</div>
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {Object.values(Band).map((band, bi) => (
+              <tr key={band}>
+                <th key={band} className="px-3 py-2">
+                  {band}
+                </th>
+                {freeTable[bi].map((isFree, i) => (
+                  <td key={i} className="p-px">
+                    <div
+                      className={`m-auto h-3 w-full${
+                        i > 0 ? '' : ' rounded-l-full'
+                      }${i == dates.length - 1 ? ' rounded-r-full' : ''} ${
+                        isFree == null
+                          ? 'bg-base-200'
+                          : isFree
+                          ? 'bg-green-500/90'
+                          : 'bg-red-500/90'
+                      }`}
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

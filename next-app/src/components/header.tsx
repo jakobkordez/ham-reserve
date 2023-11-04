@@ -2,49 +2,53 @@
 
 import { Role } from '@/enums/role.enum';
 import { useAuthState } from '@/state/auth-state';
+import { THEME_DARK, useThemeState } from '@/state/theme-state';
 import { useUserState } from '@/state/user-state';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faMoon, faSun, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export function Header() {
-  // const [theme, setTheme] = useState<string>(THEME_DARK);
-  // const toggleTheme = useThemeState((s) => s.toggleTheme);
-
-  // useEffect(() => {
-  //   setTheme(useThemeState.getState().theme);
-  //   useThemeState.subscribe((s) => setTheme(s.theme));
-  // }, []);
-
   return (
     <div className="flex h-16 select-none justify-between bg-primary text-primary-content shadow-md dark:border-b dark:border-primary">
-      <Link href="/" className="my-auto ml-4 text-2xl font-semibold">
+      <Link href="/" className="my-auto ml-4 flex-1 text-2xl font-semibold">
         Ham Reserve
       </Link>
-      <div className="flex">
-        {/* <label className="header-button swap-rotate swap">
-          <input
-            type="checkbox"
-            checked={theme === THEME_DARK}
-            onChange={toggleTheme}
-          />
-          <FontAwesomeIcon
-            icon={faMoon}
-            width={20}
-            height={20}
-            className="swap-off h-5 w-5"
-          />
-          <FontAwesomeIcon
-            icon={faSun}
-            width={20}
-            height={20}
-            className="swap-on h-5 w-5"
-          />
-        </label> */}
+      {/* <div className="my-1 items-center rounded bg-base-100 px-2 text-base-content">
+        <Clock />
+      </div> */}
+      <div className="flex flex-1 justify-end">
+        <ThemeToggle />
         <UserHeader />
       </div>
     </div>
+  );
+}
+
+function ThemeToggle() {
+  const [theme, toggleTheme] = useThemeState((s) => [s.theme, s.toggleTheme]);
+
+  return (
+    <label className="header-button swap swap-rotate">
+      <input
+        type="checkbox"
+        checked={theme === THEME_DARK}
+        onChange={toggleTheme}
+      />
+      <FontAwesomeIcon
+        icon={faMoon}
+        width={20}
+        height={20}
+        className="swap-off h-5 w-5"
+      />
+      <FontAwesomeIcon
+        icon={faSun}
+        width={20}
+        height={20}
+        className="swap-on h-5 w-5"
+      />
+    </label>
   );
 }
 

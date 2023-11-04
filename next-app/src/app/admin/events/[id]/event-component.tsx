@@ -5,9 +5,15 @@ import { Loading } from '@/components/loading';
 import { PrivateTag } from '@/components/private-tag';
 import { ProgressBar } from '@/components/progress-bar';
 import { Event } from '@/interfaces/event.interface';
+import { Reservation } from '@/interfaces/reservation.interface';
 import { User } from '@/interfaces/user.interface';
-import { getUTCString } from '@/util/date.util';
-import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { getUTCDateString, getUTCString } from '@/util/date.util';
+import {
+  faFileCircleCheck,
+  faFileCircleExclamation,
+  faMinus,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -52,9 +58,7 @@ export function EventComponent({ event }: EventComponentProps) {
       <div className="grid gap-8 sm:grid-cols-2">
         <AccessComponent event={event} />
 
-        <div>
-          <h2 className="mb-4 text-2xl">Rezervacije</h2>
-        </div>
+        <ReservationsComponent event={event} />
       </div>
     </div>
   );
@@ -134,6 +138,82 @@ function AccessComponent({ event }: EventComponentProps) {
           </table>
         </div>
       )}
+    </div>
+  );
+}
+
+function ReservationsComponent({ event }: EventComponentProps) {
+  const [reservations, setReservations] = useState<Reservation[]>();
+  const [users, setUsers] = useState<Map<string, User>>();
+
+  useEffect(() => {
+    apiFunctions
+      .getReservationsForEvent(event._id)
+      .then((res) => {
+        setReservations(
+          res.sort((a, b) => b.forDate.valueOf() - a.forDate.valueOf()),
+        );
+        const u = new Set<string>(res.map((r) => r.user));
+        apiFunctions
+          .getManyUsers(Array.from(u))
+          .then((users) => {
+            setUsers(new Map(users.map((u) => [u._id, u])));
+          })
+          .catch(console.error);
+      })
+      .catch(console.error);
+  }, [event._id]);
+
+  return (
+    <div>
+      <h2 className="text-2xl">Rezervacije</h2>
+
+      <div className="overflow-x-auto">
+        <table className="table">
+          <colgroup>
+            <col width="50%" />
+            <col width="50%" />
+            <col />
+            <col />
+          </colgroup>
+          <tbody>
+            {reservations?.map((reservation, i) => (
+              <tr key={i}>
+                <td className="font-callsign text-lg">
+                  {users?.get(reservation.user)?.username ?? (
+                    <span className="loading loading-sm" />
+                  )}
+                </td>
+                <td>{getUTCDateString(reservation.forDate)}</td>
+                <td>
+                  {reservation.forDate < new Date() && (
+                    <FontAwesomeIcon
+                      icon={
+                        reservation.logSummary
+                          ? faFileCircleCheck
+                          : faFileCircleExclamation
+                      }
+                      className={`h-5 w-5 ${
+                        reservation.logSummary
+                          ? 'text-green-400'
+                          : 'text-orange-300'
+                      }`}
+                    />
+                  )}
+                </td>
+                <td>
+                  <Link
+                    href={`/reservation/${reservation._id}`}
+                    className="btn btn-sm"
+                  >
+                    Več
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { apiFunctions } from '@/api';
 import { Event } from '@/interfaces/event.interface';
 import { LogSummary } from '@/interfaces/log-summary.interface';
 import { Reservation } from '@/interfaces/reservation.interface';
+import { useUserState } from '@/state/user-state';
 import { getUTCDateString, getUTCString } from '@/util/date.util';
 import {
   faFileCircleCheck,
@@ -110,6 +111,9 @@ function LogSummaryC({ logSummary }: { logSummary: LogSummary }) {
 function Upload({ res }: { res: Reservation }) {
   const [error, setError] = useState<string>();
   const [file, setFile] = useState<File>();
+  const user = useUserState((s) => s.user);
+
+  if (!user || res.user !== user._id) return null;
 
   async function submit() {
     if (!file) {
