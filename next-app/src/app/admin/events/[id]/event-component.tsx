@@ -7,7 +7,7 @@ import { ProgressBar } from '@/components/progress-bar';
 import { Event } from '@/interfaces/event.interface';
 import { Reservation } from '@/interfaces/reservation.interface';
 import { User } from '@/interfaces/user.interface';
-import { getUTCDateString, getUTCString } from '@/util/date.util';
+import { getUTCString } from '@/util/date.util';
 import {
   faFileCircleCheck,
   faFileCircleExclamation,
@@ -151,7 +151,9 @@ function ReservationsComponent({ event }: EventComponentProps) {
       .getReservationsForEvent(event._id)
       .then((res) => {
         setReservations(
-          res.sort((a, b) => b.forDate.valueOf() - a.forDate.valueOf()),
+          res.sort(
+            (a, b) => b.startDateTime.valueOf() - a.startDateTime.valueOf(),
+          ),
         );
         const u = new Set<string>(res.map((r) => r.user));
         apiFunctions
@@ -184,9 +186,12 @@ function ReservationsComponent({ event }: EventComponentProps) {
                     <span className="loading loading-sm" />
                   )}
                 </td>
-                <td>{getUTCDateString(reservation.forDate)}</td>
                 <td>
-                  {reservation.forDate < new Date() && (
+                  {getUTCString(reservation.startDateTime)} -{' '}
+                  {getUTCString(reservation.endDateTime)}
+                </td>
+                <td>
+                  {reservation.startDateTime < new Date() && (
                     <FontAwesomeIcon
                       icon={
                         reservation.logSummary

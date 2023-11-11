@@ -11,5 +11,9 @@ export function LayoutComponent({ children }: { children: React.ReactNode }) {
     useThemeState.subscribe((t) => setTheme(t.theme));
   }, []);
 
-  return <div data-theme={theme}>{children}</div>;
+  return (
+    <div data-theme={theme} className="min-h-screen">
+      {children}
+    </div>
+  );
 }

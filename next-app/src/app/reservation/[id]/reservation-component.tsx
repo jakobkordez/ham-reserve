@@ -5,7 +5,7 @@ import { Event } from '@/interfaces/event.interface';
 import { LogSummary } from '@/interfaces/log-summary.interface';
 import { Reservation } from '@/interfaces/reservation.interface';
 import { useUserState } from '@/state/user-state';
-import { getUTCDateString, getUTCString } from '@/util/date.util';
+import { getUTCString } from '@/util/date.util';
 import {
   faFileCircleCheck,
   faFileCircleExclamation,
@@ -28,13 +28,16 @@ export function ReservationComponent({
         <h1 className="font-callsign text-3xl">{event.callsign}</h1>
 
         <div className="flex flex-col gap-1">
-          <div>Datum: {getUTCDateString(reservation.forDate)}</div>
+          <div>
+            Čas: {getUTCString(reservation.startDateTime)} -{' '}
+            {getUTCString(reservation.endDateTime)}
+          </div>
           <div>Frekvenčni pasovi: {reservation.bands.join(', ')}</div>
           <div>Način dela: {reservation.modes.join(', ')}</div>
         </div>
       </div>
 
-      {reservation.forDate < new Date() && (
+      {reservation.startDateTime < new Date() && (
         <div className="flex flex-col gap-6">
           <div className="text-2xl">Radioamaterski dnevnik rezervacije</div>
 

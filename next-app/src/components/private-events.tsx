@@ -10,7 +10,7 @@ export function PrivateEvents() {
   const [events, setEvents] = useState<Event[]>();
 
   useEffect(() => {
-    apiFunctions.getPrivateEvents().then(setEvents).catch(console.log);
+    apiFunctions.getPrivateEvents().then(setEvents).catch(console.error);
   }, []);
 
   if ((events?.length ?? 0) === 0) return <></>;

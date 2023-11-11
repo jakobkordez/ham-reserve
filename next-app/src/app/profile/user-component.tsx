@@ -51,7 +51,9 @@ function MyReservations() {
       .getReservationsForSelf()
       .then((res) => {
         setReservations(
-          res.sort((a, b) => b.forDate.valueOf() - a.forDate.valueOf()),
+          res.sort(
+            (a, b) => b.startDateTime.valueOf() - a.startDateTime.valueOf(),
+          ),
         );
       })
       .catch((err) => {

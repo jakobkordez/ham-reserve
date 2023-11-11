@@ -7,8 +7,8 @@ import { Model } from 'mongoose';
 import { LogSummary } from './interfaces/log-summary.interface';
 
 interface ReservationFilter {
-  fromDate?: Date;
-  toDate?: Date;
+  fromDateTime?: Date;
+  toDateTime?: Date;
   userId?: string;
   eventId?: string;
 }
@@ -33,8 +33,8 @@ export class ReservationsService {
   }
 
   findAll({
-    fromDate,
-    toDate,
+    fromDateTime,
+    toDateTime,
     eventId,
     userId,
   }: ReservationFilter): Promise<Reservation[]> {
@@ -44,8 +44,8 @@ export class ReservationsService {
         $and: [
           userId ? { user: userId } : {},
           eventId ? { event: eventId } : {},
-          fromDate ? { forDate: { $gte: fromDate } } : {},
-          toDate ? { forDate: { $lte: toDate } } : {},
+          fromDateTime ? { endDateTime: { $gt: fromDateTime } } : {},
+          toDateTime ? { startDateTime: { $lt: toDateTime } } : {},
         ],
       })
       .exec();

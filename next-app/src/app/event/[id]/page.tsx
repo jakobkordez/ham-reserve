@@ -29,7 +29,7 @@ function _EventComponent({ params: { id } }: EventPageProps) {
       .getEvent(id)
       .then(setEvent)
       .catch((e) => {
-        console.log(e);
+        console.error(e);
         setEvent(null);
       });
   }, [id]);

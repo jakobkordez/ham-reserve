@@ -38,7 +38,7 @@ export default function Login({ searchParams: { redirect } }: LoginProps) {
         router.replace(redirect || '/');
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
         setError('Napačno uporabniško ime ali geslo');
       });
   }

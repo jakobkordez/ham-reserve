@@ -1,5 +1,5 @@
 import { Reservation } from '@/interfaces/reservation.interface';
-import { getUTCDateString } from '@/util/date.util';
+import { getUTCString } from '@/util/date.util';
 import {
   faFileCircleCheck,
   faFileCircleExclamation,
@@ -15,15 +15,16 @@ export function ReservationsTable({ reservations }: ReservationsTableProps) {
   return (
     <table className="table">
       <colgroup>
-        <col style={{ width: '20%' }} />
-        <col style={{ width: '50%' }} />
-        <col style={{ width: '50%' }} />
+        {/* <col style={{ width: '30%' }} /> */}
+        <col />
+        <col style={{ width: '30%' }} />
+        <col style={{ width: '30%' }} />
         <col />
         <col />
       </colgroup>
       <thead>
         <tr>
-          <th>Datum</th>
+          <th>Čas</th>
           <th>Frekvenčna področja</th>
           <th>Načini</th>
         </tr>
@@ -31,7 +32,10 @@ export function ReservationsTable({ reservations }: ReservationsTableProps) {
       <tbody>
         {reservations.map((reservation) => (
           <tr key={reservation._id}>
-            <td>{getUTCDateString(reservation.forDate)}</td>
+            <td>
+              {getUTCString(reservation.startDateTime)} -<br />
+              {getUTCString(reservation.endDateTime)}
+            </td>
             <td>
               <div className="flex flex-wrap gap-1">
                 {reservation.bands.join(', ')}
@@ -43,7 +47,7 @@ export function ReservationsTable({ reservations }: ReservationsTableProps) {
               </div>
             </td>
             <td>
-              {reservation.forDate < new Date() && (
+              {reservation.startDateTime < new Date() && (
                 <FontAwesomeIcon
                   icon={
                     reservation.logSummary

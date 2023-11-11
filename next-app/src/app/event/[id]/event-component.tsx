@@ -12,6 +12,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useUserState } from '@/state/user-state';
 import { Role } from '@/enums/role.enum';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 interface EventComponentProps {
   event: Event;
@@ -62,8 +64,15 @@ export function EventComponent({ event }: EventComponentProps) {
             <MyReservations event={event} />
           </div>
 
-          <div>
-            <h2 className="mb-4 text-2xl">Nova rezervacija</h2>
+          <div className="flex flex-col gap-4">
+            <h2 className="text-2xl">Nova rezervacija</h2>
+            <div className="alert">
+              <FontAwesomeIcon
+                icon={faInfoCircle}
+                className="shrink-0 text-primary"
+              />
+              Trenutni čas: <Time />
+            </div>
             <ReserveComponent event={event} />
           </div>
         </>
@@ -83,8 +92,6 @@ export function EventComponent({ event }: EventComponentProps) {
 
 function EditButton({ id }: { id: string }) {
   const user = useUserState((s) => s.user);
-  console.log(user);
-
   if (!user || !user.roles.includes(Role.Admin)) return null;
 
   return (
@@ -92,4 +99,16 @@ function EditButton({ id }: { id: string }) {
       Uredi
     </Link>
   );
+}
+
+function Time() {
+  const [time, setTime] = useState(new Date());
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return <>{getUTCString(time)}</>;
 }

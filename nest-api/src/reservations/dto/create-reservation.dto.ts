@@ -7,8 +7,11 @@ import {
 } from 'class-validator';
 
 export class CreateReservationDto {
-  @IsDateString()
-  forDate: Date;
+  @IsDateString({ strict: true })
+  startDateTime: Date;
+
+  @IsDateString({ strict: true })
+  endDateTime: Date;
 
   @IsArray()
   @IsString({ each: true })

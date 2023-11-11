@@ -27,7 +27,10 @@ export class Reservation {
   event: Event | string;
 
   @Prop({ required: true })
-  forDate: Date;
+  startDateTime: Date;
+
+  @Prop({ required: true })
+  endDateTime: Date;
 
   @Prop({
     type: [String],

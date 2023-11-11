@@ -20,7 +20,7 @@ export default function AdminEventPage({ params: { id } }: EventPageProps) {
       .getEvent(id)
       .then(setEvent)
       .catch((e) => {
-        console.log(e);
+        console.error(e);
         setEvent(null);
       });
   }, [id]);

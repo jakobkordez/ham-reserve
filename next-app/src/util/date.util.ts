@@ -29,7 +29,9 @@ export function getUTCString(dt: Date) {
   return `${date} ${time} UTC`;
 }
 
-export const dayInMs = 1000 * 60 * 60 * 24;
+export const hourInMs = 1000 * 60 * 60;
+
+export const dayInMs = hourInMs * 24;
 
 export const dayInWeeks = ['Ned', 'Pon', 'Tor', 'Sre', 'Čet', 'Pet', 'Sob'];
 

@@ -18,11 +18,13 @@ export function MyReservations({ event }: MyReservationsProps) {
       .getReservationsForSelf({ event: event._id })
       .then((res) => {
         setReservations(
-          res.sort((a, b) => b.forDate.valueOf() - a.forDate.valueOf()),
+          res.sort(
+            (a, b) => b.startDateTime.valueOf() - a.startDateTime.valueOf(),
+          ),
         );
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
   }, [event._id]);
 

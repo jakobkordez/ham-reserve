@@ -85,8 +85,8 @@ export class UsersController {
     return this.reservationsService.findAll({
       userId: userReq.id,
       eventId: event,
-      fromDate: start ? new Date(start) : undefined,
-      toDate: end ? new Date(end) : undefined,
+      fromDateTime: start ? new Date(start) : undefined,
+      toDateTime: end ? new Date(end) : undefined,
     });
   }
 

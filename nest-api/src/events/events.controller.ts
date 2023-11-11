@@ -110,17 +110,33 @@ export class EventsController {
 
     const errors = [];
 
-    const forDate = new Date(createReservationDto.forDate);
+    const hour = 60 * 60 * 1000;
+    const startDTRaw = createReservationDto.startDateTime;
+    const endDTRaw = createReservationDto.endDateTime;
+    const startDTVal = Math.floor(new Date(startDTRaw).valueOf() / hour) * hour;
+    const endDTVal = Math.floor(new Date(endDTRaw).valueOf() / hour) * hour;
 
-    if (event.fromDateTime && forDate < event.fromDateTime)
+    // TODO Error if start/end time is not on the hour
+
+    // Check that start time is at least an hour before end time
+    if (startDTVal >= endDTVal)
+      errors.push(`Start time must be at least an hour before end time`);
+
+    const startDT = new Date(startDTVal);
+    const endDT = new Date(endDTVal);
+
+    // Check that start time is not before event start time
+    if (event.fromDateTime && startDT < event.fromDateTime)
       errors.push(`Event starts at ${event.fromDateTime.toISOString()}`);
-    if (event.toDateTime && forDate > event.toDateTime)
+
+    // Check that end time is not after event end time
+    if (event.toDateTime && endDT > event.toDateTime)
       errors.push(`Event ends at ${event.toDateTime.toISOString()}`);
 
     const reservations = await this.reservationsService.findAll({
       eventId,
-      fromDate: forDate,
-      toDate: forDate,
+      fromDateTime: startDT,
+      toDateTime: endDT,
     });
 
     const bandSet = new Set(createReservationDto.bands);
@@ -131,7 +147,7 @@ export class EventsController {
           for (const b of r.bands) {
             if (bandSet.has(b)) {
               errors.push(
-                `Mode ${m} on band ${b} is already reserved for ${forDate.toISOString()}`,
+                `Mode ${m} on band ${b} is already reserved for ${r.startDateTime.toISOString()} - ${r.endDateTime.toISOString()}`,
               );
             }
           }
@@ -157,8 +173,8 @@ export class EventsController {
   ): Promise<Reservation[]> {
     return this.reservationsService.findAll({
       eventId,
-      fromDate: start ? new Date(start) : undefined,
-      toDate: end ? new Date(end) : undefined,
+      fromDateTime: start ? new Date(start) : undefined,
+      toDateTime: end ? new Date(end) : undefined,
     });
   }
 }

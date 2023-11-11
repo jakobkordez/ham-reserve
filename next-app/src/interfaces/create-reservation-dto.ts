@@ -1,5 +1,6 @@
 export interface CreateReservationDto {
-  forDate: string;
+  startDateTime: string;
+  endDateTime: string;
   modes: string[];
   bands: string[];
 }

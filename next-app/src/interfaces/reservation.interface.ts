@@ -4,7 +4,8 @@ export interface Reservation {
   _id: string;
   user: string;
   event: string;
-  forDate: Date;
+  startDateTime: Date;
+  endDateTime: Date;
   modes: string[];
   bands: string[];
   logSummary?: LogSummary;
