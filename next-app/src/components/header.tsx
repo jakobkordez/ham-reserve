@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 
 export function Header() {
   return (
-    <div className="flex h-16 select-none justify-between bg-primary text-primary-content shadow-md dark:border-b dark:border-primary">
+    <div className="flex h-16 select-none justify-between bg-primary text-primary-content shadow-md dark:border-b dark:border-primary dark:bg-base-200 dark:text-base-content dark:shadow-lg dark:shadow-primary/20">
       <Link href="/" className="my-auto ml-4 flex-1 text-2xl font-semibold">
         Ham Reserve
       </Link>

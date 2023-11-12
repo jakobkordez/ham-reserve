@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export const THEME_DARK = 'night';
+export const THEME_DARK = 'forest';
 export const THEME_LIGHT = 'lemonade';
 
 interface ThemeState {

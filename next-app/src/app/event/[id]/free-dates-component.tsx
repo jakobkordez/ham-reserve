@@ -4,7 +4,7 @@ import { Event } from '@/interfaces/event.interface';
 import { Reservation } from '@/interfaces/reservation.interface';
 import { dayInMs, hourInMs } from '@/util/date.util';
 import { useEffect, useState } from 'react';
-import { Band } from '@/enums/band.enum';
+import { Band, COMMON_BANDS } from '@/enums/band.enum';
 import { Mode } from '@/enums/mode.enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -18,9 +18,12 @@ export function FreeDatesComponent({ event }: { event: Event }) {
   const [date, setDate] = useState<string>(
     new Date().toISOString().slice(0, 10),
   );
+  const [band, setBand] = useState<Band>();
   const [mode, setMode] = useState<Mode>();
 
-  const bands = Object.values(Band).map((val) => val.toString());
+  const bands = band
+    ? [band.toString()]
+    : COMMON_BANDS.map((band) => band.toString());
 
   useEffect(() => {
     setReservations(undefined);
@@ -115,6 +118,30 @@ export function FreeDatesComponent({ event }: { event: Event }) {
         </div>
         <div className="form-control">
           <label className="label">
+            <span className="label-text">Frekvenčni pas</span>
+          </label>
+          <select
+            className="select select-bordered w-full"
+            value={band?.toString() ?? ''}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val == '') setBand(undefined);
+              else setBand(val as Band);
+            }}
+          >
+            <option value="">---</option>
+            {Object.values(Band).map((band) => (
+              <option key={band}>{band}</option>
+            ))}
+          </select>
+          <label className="label">
+            <span className="label-text-alt">
+              Tukaj se nahajajo vsi frekvenčni pasovi
+            </span>
+          </label>
+        </div>
+        <div className="form-control">
+          <label className="label">
             <span className="label-text">Način</span>
           </label>
           <select
@@ -127,31 +154,31 @@ export function FreeDatesComponent({ event }: { event: Event }) {
             }}
           >
             <option value="">Vsi</option>
-            {Object.values(Mode).map((band) => (
-              <option key={band}>{band}</option>
+            {Object.values(Mode).map((mode) => (
+              <option key={mode}>{mode}</option>
             ))}
           </select>
         </div>
       </div>
 
-      <div className="flex-[2] overflow-x-auto">
+      <div className="flex-[2]">
         <table className="table mx-auto w-auto">
           <tbody>
             <tr>
               <td />
               <td>
                 <div className="flex">
-                  <div className="w-12 border-l border-base-300 pl-0.5">0</div>
-                  <div className="w-12 border-l border-base-300 pl-0.5">4</div>
-                  <div className="w-12 border-l border-base-300 pl-0.5">8</div>
-                  <div className="w-12 border-l border-base-300 pl-0.5">12</div>
-                  <div className="w-12 border-l border-base-300 pl-0.5">16</div>
-                  <div className="w-12 border-l border-base-300 pl-0.5">20</div>
+                  <div className="w-12 border-l border-base-300 pl-1">0</div>
+                  <div className="w-12 border-l border-base-300 pl-1">4</div>
+                  <div className="w-12 border-l border-base-300 pl-1">8</div>
+                  <div className="w-12 border-l border-base-300 pl-1">12</div>
+                  <div className="w-12 border-l border-base-300 pl-1">16</div>
+                  <div className="w-12 border-l border-base-300 pl-1">20</div>
                 </div>
               </td>
             </tr>
 
-            {Object.values(Band).map((band, bi) => (
+            {bands.map((band, bi) => (
               <tr key={band}>
                 <th key={band} className="px-3 py-2">
                   {band}
@@ -161,18 +188,16 @@ export function FreeDatesComponent({ event }: { event: Event }) {
                     {freeTable[bi].map((taken, i) => (
                       <div
                         key={i}
-                        className={`m-auto h-3 w-3 border-l border-base-200 first:rounded-l-full first:border-0 last:rounded-r-full ${
-                          taken?.size ?? 0 ? 'tooltip' : ''
-                        } ${
+                        className={`tooltip m-auto h-3 w-3 border-l border-base-200 first:rounded-l-full first:border-0 last:rounded-r-full ${
                           taken == null
                             ? 'bg-base-200'
                             : taken.size == 0
                             ? 'bg-green-500/90'
-                            : 'bg-red-500/90'
+                            : mode || taken.size == Object.values(Mode).length
+                            ? 'bg-red-500/90'
+                            : 'bg-yellow-500/90'
                         }`}
-                        data-tip={`Zasedeni načini: ${Array.from(
-                          taken?.values() ?? [],
-                        ).join(', ')}`}
+                        data-tip={`${formatTime(i)} - ${formatTime(i + 1)} UTC`}
                       />
                     ))}
                   </div>
@@ -184,4 +209,8 @@ export function FreeDatesComponent({ event }: { event: Event }) {
       </div>
     </div>
   );
+}
+
+function formatTime(hour: number) {
+  return `${hour.toString().padStart(2, '0')}:00`;
 }

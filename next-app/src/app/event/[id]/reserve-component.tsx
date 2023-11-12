@@ -1,8 +1,8 @@
 'use client';
 
 import { apiFunctions } from '@/api';
-import { Band } from '@/enums/band.enum';
-import { Mode } from '@/enums/mode.enum';
+import { Band, COMMON_BANDS } from '@/enums/band.enum';
+import { COMMON_MODES, Mode } from '@/enums/mode.enum';
 import { Event } from '@/interfaces/event.interface';
 import { User } from '@/interfaces/user.interface';
 import { useUserState } from '@/state/user-state';
@@ -23,15 +23,42 @@ function padZero(num: number) {
   return num.toString().padStart(2, '0');
 }
 
+function formatHours(start: Date, end: Date) {
+  const hours = (end.valueOf() - start.valueOf()) / hourInMs;
+  switch (hours) {
+    case 1:
+      return '1 ura';
+    case 2:
+      return '2 uri';
+    case 3:
+    case 4:
+      return hours + ' ure';
+    default:
+      return hours + ' ur';
+  }
+}
+
 export function ReserveComponent({ event }: ReserveComponentProps) {
   const [user, setUser] = useState<User | null>();
   const getUser = useUserState((state) => state.getUser);
+
+  const [availableBands, setAvailableBands] = useState<Set<Band>>(
+    new Set(COMMON_BANDS),
+  );
+  const [availableModes, setAvailableModes] = useState<Set<Mode>>(
+    new Set(COMMON_MODES),
+  );
 
   const [startDT, setStartDT] = useState<Date>(floorHour(Date.now()));
   const [endDT, setEndDT] = useState<Date>(floorHour(Date.now() + hourInMs));
   const [bands, setBands] = useState<Set<Band>>(new Set());
   const [modes, setModes] = useState<Set<Mode>>(new Set());
   const [error, setError] = useState<string>();
+
+  const allValid =
+    startDT.valueOf() < endDT.valueOf() && bands.size > 0 && modes.size > 0;
+
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     getUser().then(setUser);
@@ -59,10 +86,9 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
         const msg = err.response.data.message;
         if (msg instanceof Array) setError(msg.join(', '));
         else setError(msg);
+        setModalOpen(false);
       });
   }
-
-  // const dates = getNextNDays(7, event);
 
   return (
     <div className="flex flex-col gap-6 rounded-lg border p-6">
@@ -113,29 +139,12 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
         </div>
       )}
 
-      {/* <div className="mt-3 flex flex-wrap gap-1">
-            {dates.map((dt, i) => (
-              <button
-                key={i}
-                onClick={() => {
-                  setDate(dt);
-                  dateRef.current!.value = dt.toISOString().slice(0, 10);
-                }}
-                className={`btn btn-sm flex-1 ${
-                  date?.valueOf() === dt?.valueOf() ? 'btn-primary' : ''
-                }`}
-              >
-                {getUTCDMString(dt)}
-              </button>
-            ))}
-          </div> */}
-
       <div className="form-control">
         <label className="label">
           <span className="label-text font-bold">Frekvenčna področja</span>
         </label>
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-          {Object.values(Band).map((band) => {
+          {Array.from(availableBands).map((band) => {
             const checked = bands.has(band);
             function toggle() {
               if (!checked) setBands(new Set(bands).add(band));
@@ -157,18 +166,35 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
                 checked={checked}
                 onChange={() => toggle()}
                 aria-label={band}
-                className="btn btn-outline btn-sm"
+                className="btn btn-sm"
               />
             );
           })}
+
+          <select
+            className="select select-sm bg-base-200 text-center font-bold uppercase md:px-3"
+            value=""
+            onChange={(e) => {
+              const val = e.target.value;
+              if (!val) return;
+              setBands(new Set(bands).add(val as Band));
+              setAvailableBands(new Set(availableBands).add(val as Band));
+            }}
+          >
+            <option value="">Ostala</option>
+            {Object.values(Band).map((band) => (
+              <option key={band}>{band}</option>
+            ))}
+          </select>
         </div>
       </div>
+
       <div className="form-control">
         <label className="label">
           <span className="label-text font-bold">Načini</span>
         </label>
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-          {Object.values(Mode).map((mode) => {
+          {Array.from(availableModes).map((mode) => {
             const checked = modes.has(mode);
             function toggle() {
               if (!checked) setModes(new Set(modes).add(mode));
@@ -190,10 +216,26 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
                 checked={checked}
                 onChange={() => toggle()}
                 aria-label={mode}
-                className="btn btn-outline btn-sm"
+                className="btn btn-sm"
               />
             );
           })}
+
+          <select
+            className="select select-sm bg-base-200 text-center font-bold uppercase md:px-3"
+            value=""
+            onChange={(e) => {
+              const val = e.target.value;
+              if (!val) return;
+              setModes(new Set(modes).add(val as Mode));
+              setAvailableModes(new Set(availableModes).add(val as Mode));
+            }}
+          >
+            <option value="">Ostali</option>
+            {Object.values(Mode).map((mode) => (
+              <option key={mode}>{mode}</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -204,9 +246,64 @@ export function ReserveComponent({ event }: ReserveComponentProps) {
         </div>
       )}
 
-      <button className="btn btn-primary" onClick={submit}>
+      <button
+        className="btn btn-primary"
+        onClick={() => setModalOpen(true)}
+        disabled={!allValid}
+      >
         Rezerviraj
       </button>
+
+      <div className={`modal ${modalOpen ? 'modal-open' : ''}`}>
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">Potrdi rezervacijo</h3>
+          <p className="py-4">
+            Previdno preglej podatke in potrdi rezervacijo.
+          </p>
+
+          <table className="table">
+            <tbody>
+              <tr>
+                <th>Klicni znak:</th>
+                <td>{event.callsign}</td>
+              </tr>
+              <tr>
+                <th>Začetek:</th>
+                <td>{getUTCString(startDT)}</td>
+              </tr>
+              <tr>
+                <th>Konec:</th>
+                <td>{getUTCString(endDT)}</td>
+              </tr>
+              <tr>
+                <th>Čas:</th>
+                <td>{formatHours(startDT, endDT)}</td>
+              </tr>
+              <tr>
+                <th>Frekvenčna področja:</th>
+                <td>{Array.from(bands).join(', ')}</td>
+              </tr>
+              <tr>
+                <th>Načini:</th>
+                <td>{Array.from(modes).join(', ')}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn" onClick={() => setModalOpen(false)}>
+                Prekliči
+              </button>
+            </form>
+            <form method="dialog">
+              <button className="btn btn-primary" onClick={submit}>
+                Potrdi
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
