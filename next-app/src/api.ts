@@ -278,6 +278,13 @@ export const apiFunctions = {
       )
     ).data;
   },
+  getLog: async (reservationId: string) => {
+    return (
+      await api.get<string>(`/reservations/${reservationId}/log`, {
+        headers: await getAuthHeader(),
+      })
+    ).data;
+  },
 };
 
 const isoDateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d*)?Z?$/;

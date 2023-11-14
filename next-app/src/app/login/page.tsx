@@ -46,7 +46,7 @@ export default function Login({ searchParams: { redirect } }: LoginProps) {
   return (
     <div className="container py-10">
       <form
-        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-xl bg-gray-100 p-10 shadow-lg dark:bg-gray-800"
+        className="mx-auto flex max-w-2xl flex-col gap-4 rounded-xl bg-base-200 p-10 shadow-lg dark:bg-neutral-900"
         onSubmit={(e) => {
           e.preventDefault();
           login();

@@ -20,6 +20,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MongoIdPipe } from 'src/pipes/mongo-id.pipe';
 import { AdifValidationPipe } from 'src/pipes/adif-validation.pipe';
 import { SimpleAdif } from 'adif-parser-ts';
+import { Role } from 'src/enums/role.enum';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('reservations')
 export class ReservationsController {
@@ -30,6 +32,14 @@ export class ReservationsController {
     const res = await this.reservationsService.findOne(id);
     if (!res) throw new NotFoundException('Reservation not found');
     return res;
+  }
+
+  @Get(':id/log')
+  async getLog(@Param('id', MongoIdPipe) id: string): Promise<string> {
+    const res = await this.reservationsService.findOne(id);
+    if (!res) throw new NotFoundException('Reservation not found');
+    if (!res.adiFile) throw new NotFoundException('Log not found');
+    return res.adiFile;
   }
 
   @Post(':id/log')
@@ -107,8 +117,8 @@ export class ReservationsController {
     return this.reservationsService.update(id, updateReservationDto);
   }
 
-  @Delete(':id')
-  async remove(
+  @Patch(':id/cancel')
+  async cancel(
     @RequestUser() user: UserTokenData,
     @Param('id') id: string,
   ): Promise<Reservation> {
@@ -117,6 +127,15 @@ export class ReservationsController {
     if (res.user !== user.id)
       throw new ForbiddenException('Reservation not owned by user');
 
-    return this.reservationsService.remove(id);
+    return this.reservationsService.cancel(id);
+  }
+
+  @Roles(Role.Admin)
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<Reservation> {
+    const res = await this.reservationsService.remove(id);
+    if (!res) throw new NotFoundException('Reservation not found');
+
+    return res;
   }
 }

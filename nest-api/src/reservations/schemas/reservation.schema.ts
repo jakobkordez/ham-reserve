@@ -62,6 +62,11 @@ export class Reservation {
   logSummary: LogSummary;
 
   @Prop({
+    default: false,
+  })
+  isCancelled: boolean;
+
+  @Prop({
     required: true,
     default: Date.now,
   })

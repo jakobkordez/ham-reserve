@@ -40,7 +40,7 @@ export class ReservationsService {
   }: ReservationFilter): Promise<Reservation[]> {
     return this.reservationModel
       .find({
-        $nor: [{ isDeleted: true }],
+        $nor: [{ isDeleted: true }, { isCancelled: true }],
         $and: [
           userId ? { user: userId } : {},
           eventId ? { event: eventId } : {},
@@ -75,6 +75,12 @@ export class ReservationsService {
         { $set: { adiFile: log, logSummary } },
         { new: true },
       )
+      .exec();
+  }
+
+  cancel(id: string): Promise<Reservation> {
+    return this.reservationModel
+      .findByIdAndUpdate(id, { $set: { isCancelled: true } }, { new: true })
       .exec();
   }
 
