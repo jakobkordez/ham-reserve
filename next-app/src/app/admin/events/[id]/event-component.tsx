@@ -11,8 +11,8 @@ import { getUTCString } from '@/util/date.util';
 import {
   faFileCircleCheck,
   faFileCircleExclamation,
-  faMinus,
   faPlus,
+  faRemove,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
@@ -55,11 +55,9 @@ export function EventComponent({ event }: EventComponentProps) {
         </Link>
       </div>
 
-      <div className="grid gap-8 sm:grid-cols-2">
-        <AccessComponent event={event} />
+      <AccessComponent event={event} />
 
-        <ReservationsComponent event={event} />
-      </div>
+      <ReservationsComponent event={event} />
     </div>
   );
 }
@@ -67,12 +65,14 @@ export function EventComponent({ event }: EventComponentProps) {
 function AccessComponent({ event }: EventComponentProps) {
   const [usernameInput, setUsernameInput] = useState('');
   const [users, setUsers] = useState<User[]>();
+  const [error, setError] = useState<string>();
 
   useEffect(() => {
     apiFunctions.getManyUsers(event.access).then(setUsers).catch(console.error);
   }, [event.access]);
 
   async function grantAccess() {
+    setError(undefined);
     try {
       const user = await apiFunctions.findByUsername(
         usernameInput.toUpperCase(),
@@ -80,8 +80,11 @@ function AccessComponent({ event }: EventComponentProps) {
       await apiFunctions.grantEventAccess(event._id, user._id);
       window.location.reload();
       setUsernameInput('');
-    } catch (err) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       console.error(err);
+      setError(err.response.data.message);
     }
   }
 
@@ -95,47 +98,46 @@ function AccessComponent({ event }: EventComponentProps) {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <h2 className="text-2xl">Dostop</h2>
 
-      <div className="my-4 flex items-center gap-2">
+      <form
+        className="flex items-center gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          grantAccess();
+        }}
+      >
         <input
           className="font-callsign input input-bordered flex-1 placeholder:font-normal placeholder:normal-case"
           value={usernameInput}
           placeholder="Dodaj uporabnika"
           onChange={(e) => setUsernameInput(e.target.value)}
         />
-        <button className="btn btn-circle btn-primary" onClick={grantAccess}>
+        <button className="btn btn-circle btn-primary">
           <FontAwesomeIcon icon={faPlus} />
         </button>
-        {/* TODO Error */}
-      </div>
+      </form>
+      {error && <div className="alert alert-error px-4 py-2">{error}</div>}
 
       {!users ? (
         <Loading />
       ) : (
-        <div className="overflow-x-auto">
-          <table className="table">
-            <colgroup>
-              <col width="100%" />
-              <col />
-            </colgroup>
-            <tbody>
-              {users?.map((user, i) => (
-                <tr key={i}>
-                  <td className="font-callsign text-lg">{user.username}</td>
-                  <th>
-                    <button
-                      className="btn btn-circle btn-ghost btn-sm"
-                      onClick={() => revokeAccess(user._id)}
-                    >
-                      <FontAwesomeIcon icon={faMinus} />
-                    </button>
-                  </th>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {users?.map((user, i) => (
+            <div
+              className="flex items-center justify-between gap-2 rounded-full bg-base-200 p-2 pl-5"
+              key={i}
+            >
+              <div className="font-callsign text-lg">{user.username}</div>
+              <button
+                className="btn btn-circle btn-ghost btn-sm"
+                onClick={() => revokeAccess(user._id)}
+              >
+                <FontAwesomeIcon icon={faRemove} />
+              </button>
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -172,12 +174,14 @@ function ReservationsComponent({ event }: EventComponentProps) {
 
       <div className="overflow-x-auto">
         <table className="table">
-          <colgroup>
-            <col width="50%" />
-            <col width="50%" />
-            <col />
-            <col />
-          </colgroup>
+          <thead>
+            <tr>
+              <th>Uporabnik</th>
+              <th>Čas</th>
+              <th>Frekvenčni pasovi</th>
+              <th>Načini</th>
+            </tr>
+          </thead>
           <tbody>
             {reservations?.map((reservation, i) => (
               <tr key={i}>
@@ -187,9 +191,11 @@ function ReservationsComponent({ event }: EventComponentProps) {
                   )}
                 </td>
                 <td>
-                  {getUTCString(reservation.startDateTime)} -{' '}
+                  {getUTCString(reservation.startDateTime)} -<br />
                   {getUTCString(reservation.endDateTime)}
                 </td>
+                <td>{reservation.bands.join(', ')}</td>
+                <td>{reservation.modes.join(', ')}</td>
                 <td>
                   {reservation.startDateTime < new Date() && (
                     <FontAwesomeIcon

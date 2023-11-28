@@ -1,7 +1,10 @@
 'use client';
 
 import { apiFunctions } from '@/api';
-import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import {
+  faShuffle,
+  faTriangleExclamation,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -10,7 +13,7 @@ export function CreateUserForm() {
   const router = useRouter();
 
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState(generateRandom(8));
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -56,13 +59,22 @@ export function CreateUserForm() {
         <label className="label">
           <span className="label-text">Geslo</span>
         </label>
-        <input
-          type="password"
-          id="password"
-          className="input input-bordered"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            id="password"
+            className="input input-bordered flex-1"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            className="btn btn-primary"
+            onClick={() => setPassword(generateRandom(8))}
+          >
+            <FontAwesomeIcon icon={faShuffle} width={30} height={30} />
+            Naključno
+          </button>
+        </div>
       </div>
       <div className="form-control">
         <label className="label">
@@ -116,4 +128,14 @@ export function CreateUserForm() {
       </button>
     </div>
   );
+}
+
+function generateRandom(length: number) {
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++)
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  return result;
 }

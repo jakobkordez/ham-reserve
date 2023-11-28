@@ -25,6 +25,8 @@ export function ReservationComponent({
   reservation,
   event,
 }: ReservationComponentProps) {
+  const now = new Date();
+
   return (
     <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-4">
@@ -45,7 +47,7 @@ export function ReservationComponent({
         </div>
       </div>
 
-      {reservation.startDateTime < new Date() && (
+      {(reservation.startDateTime < now || reservation.logSummary) && (
         <div className="flex flex-col gap-6">
           <div className="text-2xl">Radioamaterski dnevnik rezervacije</div>
 
