@@ -80,11 +80,11 @@ export class ReservationsController {
       if (dateTime > maxDate) maxDate = dateTime;
 
       const lineWarning = [];
-      if (dateTime > now) lineWarning.push(`Date in the future`);
-      if (new Date(d) > res.endDateTime)
-        lineWarning.push(`Date after end of reservation`);
-      if (new Date(d) < res.startDateTime)
-        lineWarning.push(`Date before start of reservation`);
+      if (dateTime > now) lineWarning.push(`Time in the future`);
+      if (dateTime > res.endDateTime)
+        lineWarning.push(`Time after end of reservation`);
+      if (dateTime < res.startDateTime)
+        lineWarning.push(`Time before start of reservation`);
       if (!reservedBands.has(qso.band.toUpperCase()))
         lineWarning.push(`Band ${qso.band} not reserved`);
       if (!reservedModes.has(qso.mode.toUpperCase()))
