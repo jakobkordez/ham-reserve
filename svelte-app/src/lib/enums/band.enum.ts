@@ -1,0 +1,40 @@
+export enum Band {
+	b2200m = '2200m',
+	b160m = '160m',
+	b80m = '80m',
+	b60m = '60m',
+	b40m = '40m',
+	b30m = '30m',
+	b20m = '20m',
+	b17m = '17m',
+	b15m = '15m',
+	b12m = '12m',
+	b10m = '10m',
+	b6m = '6m',
+	b4m = '4m',
+	b2m = '2m',
+	b70cm = '70cm',
+	b24cm = '24cm',
+	b13cm = '13cm',
+	b9cm = '9cm',
+	b6cm = '6cm',
+	b3cm = '3cm',
+	b12mm = '12mm',
+	b6mm = '6mm',
+	b4mm = '4mm',
+	b2_5mm = '2.5mm',
+	b2mm = '2mm',
+	b1mm = '1mm'
+}
+
+export const COMMON_BANDS = [
+	// Band.b160m,
+	Band.b80m,
+	Band.b40m,
+	Band.b20m,
+	Band.b15m,
+	Band.b10m,
+	Band.b6m,
+	Band.b2m,
+	Band.b70cm
+];
