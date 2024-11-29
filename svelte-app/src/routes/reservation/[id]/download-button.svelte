@@ -4,6 +4,7 @@
 	import type { Reservation } from '$lib/interfaces/reservation.interface';
 	import { getAccessToken } from '$lib/stores/auth-store';
 	import { faDownload } from '@fortawesome/free-solid-svg-icons';
+	import { tick } from 'svelte';
 	import Fa from 'svelte-fa';
 
 	const { event, reservation }: { event: Event; reservation: Reservation } = $props();
@@ -29,8 +30,7 @@
 			.getLog(token, reservation._id)
 			.then((res) => {
 				url = window.URL.createObjectURL(new Blob([res]));
-				aRef.setAttribute('href', url);
-				aRef.click();
+				tick().then(() => aRef.click());
 			})
 			.catch((e) => {
 				console.error(e);
@@ -43,14 +43,14 @@
 	<span>Prenesi</span>
 {/snippet}
 
-<button class={`btn btn-sm ${url ? 'hidden' : ''}`} onclick={download}>
+<button class="btn btn-sm {url ? 'hidden' : ''}" onclick={download}>
 	{@render buttonContent()}
 </button>
 <a
 	bind:this={aRef}
-	href={''}
-	class={`btn btn-sm ${url ? '' : 'hidden'}`}
-	download={`${event.callsign}_${reservation._id}.adi`}
+	href={url}
+	class="btn btn-sm {url ? '' : 'hidden'}"
+	download="{event.callsign}_{reservation._id}.adi"
 >
 	{@render buttonContent()}
 </a>

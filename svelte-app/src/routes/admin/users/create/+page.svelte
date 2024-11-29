@@ -3,11 +3,12 @@
 	import { apiFunctions } from '$lib/api';
 	import { uppercaseInput } from '$lib/input-helpers';
 	import { getAccessToken } from '$lib/stores/auth-store';
-	import { faShuffle, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+	import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
+	import PasswordField from '../password-field.svelte';
 
 	let username = $state('');
-	let password = $state(generateRandom(8));
+	let password = $state('');
 	let name = $state('');
 	let email = $state('');
 	let phone = $state('');
@@ -36,15 +37,6 @@
 				});
 		});
 	}
-
-	function generateRandom(length: number) {
-		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		let result = '';
-		const charactersLength = characters.length;
-		for (let i = 0; i < length; i++)
-			result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		return result;
-	}
 </script>
 
 <div class="max-w-xl mx-auto w-full">
@@ -68,18 +60,7 @@
 			<div class="label">
 				<span class="label-text">Geslo</span>
 			</div>
-			<div class="flex gap-2">
-				<input
-					type="text"
-					id="password"
-					class="input input-bordered flex-1"
-					bind:value={password}
-				/>
-				<button class="btn btn-primary" onclick={() => (password = generateRandom(8))}>
-					<Fa icon={faShuffle} />
-					<span>Naključno</span>
-				</button>
-			</div>
+			<PasswordField bind:value={password} />
 		</label>
 		<label class="form-control">
 			<div class="label">

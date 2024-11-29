@@ -6,7 +6,7 @@ import type { CreateEventDto } from './interfaces/create-event-dto.interface';
 import type { Reservation } from './interfaces/reservation.interface';
 import type { CreateReservationDto } from './interfaces/create-reservation-dto';
 
-const baseURL = 'http://localhost:3001';
+const baseURL = 'https://reserve-api.jkob.cc';
 
 const api = axios.create({
 	baseURL,
@@ -49,6 +49,17 @@ export const apiFunctions = {
 			await api.patch<User>(
 				'/auth/password',
 				{ oldPassword, newPassword },
+				{
+					headers: { Authorization: `Bearer ${accessToken}` }
+				}
+			)
+		).data;
+	},
+	updateOtherPassword: async (accessToken: string, userId: string, password: string) => {
+		return (
+			await api.patch<User>(
+				`/users/${userId}/password`,
+				{ password },
 				{
 					headers: { Authorization: `Bearer ${accessToken}` }
 				}

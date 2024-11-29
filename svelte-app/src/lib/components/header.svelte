@@ -22,7 +22,7 @@
 					<span>{$userStore.username}</span>
 				</button>
 
-				<div class={`absolute right-2 top-full z-[1] pt-1 ${userDropOpen ? '' : 'hidden'}`}>
+				<div class="absolute right-2 top-full z-[1] pt-1 {userDropOpen ? '' : 'hidden'}">
 					<button
 						class="fixed inset-0 cursor-default"
 						tabindex="-1"

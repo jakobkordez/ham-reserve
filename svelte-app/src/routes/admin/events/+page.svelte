@@ -33,7 +33,7 @@
 					{#each events as event}
 						<tr class={event.toDateTime && event.toDateTime < new Date() ? 'opacity-60' : ''}>
 							<td class="flex flex-1 items-center gap-3">
-								<div class={`font-callsign text-2xl`}>
+								<div class="font-callsign text-2xl">
 									{event.callsign}
 								</div>
 
@@ -53,7 +53,7 @@
 							</td>
 
 							<th>
-								<a href={`/admin/events/${event._id}`} class="btn btn-ghost btn-sm"> Več </a>
+								<a href="/admin/events/{event._id}" class="btn btn-ghost btn-sm"> Več </a>
 							</th>
 						</tr>
 					{/each}

@@ -22,9 +22,9 @@
 	{:else if events.length === 0}
 		<p class="opacity-90">No events</p>
 	{:else}
-		<div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
-			{#each events as event, i}
-				<a href={`/event/${event._id}`}>
+		<div class="grid gap-4 sm:grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
+			{#each events as event}
+				<a href="/event/{event._id}">
 					<EventCard {event} />
 				</a>
 			{/each}

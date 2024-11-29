@@ -7,13 +7,15 @@
 	import type { Reservation } from '$lib/interfaces/reservation.interface';
 	import { apiFunctions } from '$lib/api';
 	import { dayInMs } from '$lib/util/date.util';
-	import { mapReservations } from '.';
+	import { clampDate, mapReservations } from '.';
 
 	const { event }: { event: Event } = $props();
 
+	const minDate = $derived(event.fromDateTime ?? event.createdAt);
+
 	let reservations = $state<Reservation[]>();
 
-	let date = $state(new Date().toISOString().slice(0, 10));
+	let date = $state(clampDate(new Date(), event).toISOString().slice(0, 10));
 	let band = $state<Band>();
 	let mode = $state<Mode>();
 
@@ -59,15 +61,16 @@
 				type="date"
 				class="input input-bordered"
 				bind:value={date}
-				min={event.fromDateTime?.toISOString().slice(0, 10)}
+				min={minDate.toISOString().slice(0, 10)}
 				max={event.toDateTime?.toISOString().slice(0, 10)}
 			/>
 			<div class="mt-2 flex gap-2">
 				<button
 					class="btn btn-primary btn-sm flex-1"
 					onclick={() => {
-						const d = new Date(date);
+						let d = new Date(date);
 						d.setDate(d.getDate() - 1);
+						clampDate(d, event);
 						date = d.toISOString().slice(0, 10);
 					}}
 				>
@@ -76,8 +79,9 @@
 				<button
 					class="btn btn-primary btn-sm flex-1"
 					onclick={() => {
-						const d = new Date(date);
+						let d = new Date(date);
 						d.setDate(d.getDate() + 1);
+						clampDate(d, event);
 						date = d.toISOString().slice(0, 10);
 					}}
 				>
@@ -92,7 +96,7 @@
 			<div class="grid grid-cols-[repeat(auto-fill,minmax(60px,1fr))] gap-1">
 				{#each COMMON_BANDS as b}
 					<button
-						class={`btn btn-sm ${band === b ? 'btn-primary' : ''}`}
+						class="btn btn-sm {band === b ? 'btn-primary' : ''}"
 						onclick={() => {
 							if (band === b) band = undefined;
 							else band = b;
@@ -129,7 +133,7 @@
 			<div class="grid grid-cols-[repeat(auto-fill,minmax(60px,1fr))] gap-1">
 				{#each COMMON_MODES as m}
 					<button
-						class={`btn btn-sm ${mode === m ? 'btn-primary' : ''}`}
+						class="btn btn-sm {mode === m ? 'btn-primary' : ''}"
 						onclick={() => {
 							mode = mode === m ? undefined : m;
 						}}
@@ -155,7 +159,7 @@
 		</div>
 	</div>
 
-	<div class="flex-[2]">
+	<div class="flex-[2] overflow-x-auto">
 		<table class="table mx-auto w-auto">
 			<tbody>
 				<tr>
@@ -181,16 +185,15 @@
 							<div class="flex">
 								{#each freeTable[bi] as taken, i}
 									<div
-										class={`tooltip m-auto h-3 w-3 border-l border-base-200 first:rounded-l-full first:border-0 last:rounded-r-full ${
-											taken == null
-												? 'bg-base-200'
-												: taken.size == 0
-													? 'bg-success/80'
-													: mode || taken.size == Object.values(Mode).length
-														? 'bg-error/70'
-														: 'bg-warning/90'
-										}`}
-										data-tip={`${formatTime(i)} - ${formatTime(i + 1)} UTC`}
+										class="tooltip m-auto h-3 w-3 border-l border-base-200 first:rounded-l-full first:border-0 last:rounded-r-full {taken ==
+										null
+											? 'bg-base-200'
+											: taken.size == 0
+												? 'bg-success/80'
+												: mode || taken.size == Object.values(Mode).length
+													? 'bg-error/70'
+													: 'bg-warning/90'}"
+										data-tip="{formatTime(i)} - {formatTime(i + 1)} UTC"
 									></div>
 								{/each}
 							</div>

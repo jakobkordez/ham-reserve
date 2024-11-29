@@ -124,7 +124,7 @@
     </div> -->
 
 	<div class="flex flex-col gap-2">
-		<div class="grid gap-4 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
+		<div class="grid gap-4 sm:grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
 			<DateTimeInput label="Začetek" bind:value={startDT} />
 
 			<DateTimeInput label="Konec" bind:value={endDT} />
@@ -178,7 +178,7 @@
 		Rezerviraj
 	</button>
 
-	<div class={`modal ${modalOpen ? 'modal-open' : ''}`}>
+	<div class="modal {modalOpen ? 'modal-open' : ''}">
 		<div class="modal-box">
 			<h3 class="text-lg font-bold">Potrdi rezervacijo</h3>
 			<p class="py-4">Previdno preglej podatke in potrdi rezervacijo.</p>

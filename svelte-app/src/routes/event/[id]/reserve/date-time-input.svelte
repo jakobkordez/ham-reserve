@@ -18,7 +18,7 @@
 	<div class="label">
 		<span class="label-text font-bold">{label} (UTC)</span>
 	</div>
-	<div class="flex gap-2">
+	<div class="flex gap-2 flex-wrap">
 		<label class="form-control flex-1">
 			<div class="label">
 				<span class="label-text">Datum</span>

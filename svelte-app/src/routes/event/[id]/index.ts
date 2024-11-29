@@ -1,5 +1,14 @@
+import type { Event } from '$lib/interfaces/event.interface';
 import type { Reservation } from '$lib/interfaces/reservation.interface';
 import { hourInMs } from '$lib/util/date.util';
+
+export function clampDate(date: Date, event: Event): Date {
+	const minDate = event.fromDateTime ?? event.createdAt;
+	const maxDate = event.toDateTime;
+	if (date < minDate) return minDate;
+	if (maxDate && date > maxDate) return maxDate;
+	return date;
+}
 
 export function mapReservations(
 	reservations: Reservation[] | undefined,

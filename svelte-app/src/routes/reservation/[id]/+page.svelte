@@ -23,7 +23,7 @@
 	{:then [reservation, event]}
 		<div class="flex flex-col gap-10">
 			<div class="flex flex-col gap-4">
-				<a href={`/event/${event._id}`} class="link flex items-center gap-2">
+				<a href="/event/{event._id}" class="link flex items-center gap-2">
 					<Fa icon={faArrowLeft} />
 					<span> Nazaj na dogodek </span>
 				</a>
@@ -44,7 +44,7 @@
 				<div class="flex flex-col gap-6">
 					<div class="text-2xl">Radioamaterski dnevnik rezervacije</div>
 
-					<div class={`alert ${reservation.logSummary ? 'alert-success' : 'alert-warning'}`}>
+					<div class="alert {reservation.logSummary ? 'alert-success' : 'alert-warning'}">
 						<Fa
 							icon={reservation.logSummary ? faFileCircleCheck : faFileCircleExclamation}
 							class="h-8 w-8 shrink-0"
@@ -60,7 +60,7 @@
 						<LogSummary logSummary={reservation.logSummary} />
 					{/if}
 
-					<UploadLog res={reservation} />
+					<UploadLog {reservation} />
 				</div>
 			{/if}
 		</div>

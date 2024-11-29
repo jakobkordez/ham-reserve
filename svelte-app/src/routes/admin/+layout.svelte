@@ -30,7 +30,7 @@
 
 	<div class="tabs tabs-bordered">
 		{#each subPages as { name, href }}
-			<a {href} class={`tab tab-lg ${pathname.startsWith(href) ? 'tab-active' : ''}`}>
+			<a {href} class="tab tab-lg {pathname.startsWith(href) ? 'tab-active' : ''}">
 				{name}
 			</a>
 		{/each}

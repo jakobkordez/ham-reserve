@@ -4,7 +4,7 @@
 	import { getAccessToken } from '$lib/stores/auth-store';
 	import { userStore } from '$lib/stores/user-store';
 
-	const { res }: { res: Reservation } = $props();
+	const { reservation: res }: { reservation: Reservation } = $props();
 
 	let error = $state<string>();
 	let file = $state<File>();

@@ -77,7 +77,7 @@
 <div
 	class="container flex flex-col items-center justify-center gap-10 py-10 lg:flex-row lg:items-start"
 >
-	<div class="flex w-full max-w-xl flex-col gap-4 rounded-lg bg-gray-200 p-10 dark:bg-gray-800">
+	<div class="flex w-full max-w-xl flex-col gap-4 rounded-lg bg-base-200 p-10">
 		<h1 class="text-4xl font-bold">Uredi profil</h1>
 
 		<div>
@@ -85,7 +85,12 @@
 				<div class="label">
 					<span class="label-text">Uporabniško ime</span>
 				</div>
-				<input type="text" value={user?.username ?? ''} disabled class="input input-bordered" />
+				<input
+					type="text"
+					value={user?.username ?? ''}
+					disabled
+					class="input input-bordered disabled:bg-base-300"
+				/>
 			</label>
 
 			<label class="form-control">
@@ -94,7 +99,7 @@
 				</div>
 				<input
 					type="text"
-					class={`input input-bordered ${name !== (user?.name ?? '') && 'input-info'}`}
+					class="input input-bordered {name !== (user?.name ?? '') && 'input-info'}"
 					bind:value={name}
 				/>
 			</label>
@@ -106,7 +111,7 @@
 				</div>
 				<input
 					type="email"
-					class={`input input-bordered ${email !== (user?.email ?? '') && 'input-info'}`}
+					class="input input-bordered {email !== (user?.email ?? '') && 'input-info'}"
 					bind:value={email}
 				/>
 			</label>
@@ -118,7 +123,7 @@
 				</div>
 				<input
 					type="tel"
-					class={`input input-bordered ${phone !== (user?.phone ?? '') && 'input-info'}`}
+					class="input input-bordered {phone !== (user?.phone ?? '') && 'input-info'}"
 					bind:value={phone}
 				/>
 			</label>
@@ -141,7 +146,7 @@
 		<button class="btn btn-primary" onclick={save}> Shrani </button>
 	</div>
 
-	<div class="flex w-full max-w-xl flex-col gap-4 rounded-lg bg-gray-200 p-10 dark:bg-gray-800">
+	<div class="flex w-full max-w-xl flex-col gap-4 rounded-lg bg-base-200 p-10">
 		<h2 class="text-4xl font-bold">Spremeni geslo</h2>
 
 		<div>

@@ -29,15 +29,15 @@
 			</div>
 
 			{#if $userStore?.roles.includes(Role.Admin)}
-				<a href={`/admin/events/${event._id}`} class="btn btn-warning btn-sm"> Uredi </a>
+				<a href="/admin/events/{event._id}" class="btn btn-warning btn-sm"> Uredi </a>
 			{/if}
 		</div>
 
 		{#if event.fromDateTime && event.toDateTime}
 			<div class="mt-4">
-				<div class="mb-2 flex justify-between">
+				<div class="mb-2 flex justify-between gap-6">
 					<div>{getUTCString(event.fromDateTime)}</div>
-					<div>{getUTCString(event.toDateTime)}</div>
+					<div class="text-right">{getUTCString(event.toDateTime)}</div>
 				</div>
 				<ProgressBar start={event.fromDateTime} end={event.toDateTime} />
 			</div>
@@ -65,7 +65,7 @@
 		</div>
 	{:else if !$userStore}
 		<div>
-			<a href={`/login?redirect=/event/${event._id}`} class="btn"> Prijavi se za rezervacijo </a>
+			<a href="/login?redirect=/event/{event._id}" class="btn"> Prijavi se za rezervacijo </a>
 		</div>
 	{:else}
 		<div class="alert">Žal nimate dovoljenja za rezervacijo tega dogodka</div>
