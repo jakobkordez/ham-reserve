@@ -143,7 +143,7 @@
 			</div>
 		{/if}
 
-		<button class="btn btn-primary" onclick={save}> Shrani </button>
+		<button class="btn btn-primary" onclick={save}>Shrani</button>
 	</div>
 
 	<div class="flex w-full max-w-xl flex-col gap-4 rounded-lg bg-base-200 p-10">
@@ -186,6 +186,6 @@
 			</div>
 		{/if}
 
-		<button class="btn btn-primary" onclick={changePassword}> Spremeni geslo </button>
+		<button class="btn btn-primary" onclick={changePassword}>Spremeni geslo</button>
 	</div>
 </div>

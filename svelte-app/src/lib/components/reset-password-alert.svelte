@@ -10,6 +10,6 @@
 	<div class="alert alert-warning {className}">
 		<Fa icon={faWarning} class="shrink-0 h-6 w-6" />
 		<span>Opozorilo: Prosim, zamenjaj geslo!</span>
-		<a href="/profile/edit" class="btn btn-sm btn-outline"> Zamenjaj zdaj </a>
+		<a href="/profile/edit" class="btn btn-sm btn-outline">Zamenjaj zdaj</a>
 	</div>
 {/if}

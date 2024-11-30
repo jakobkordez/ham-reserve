@@ -53,7 +53,7 @@
 							</td>
 
 							<th>
-								<a href="/admin/events/{event._id}" class="btn btn-ghost btn-sm"> Več </a>
+								<a href="/admin/events/{event._id}" class="btn btn-ghost btn-sm">Več</a>
 							</th>
 						</tr>
 					{/each}

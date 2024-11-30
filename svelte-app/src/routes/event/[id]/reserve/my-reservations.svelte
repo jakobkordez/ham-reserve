@@ -15,9 +15,5 @@
 {#await reservations}
 	<Loading />
 {:then reservations}
-	{#if reservations.length > 0}
-		<ReservationsTable {reservations} />
-	{:else}
-		<div>Ni rezervacij</div>
-	{/if}
+	<ReservationsTable {reservations} />
 {/await}

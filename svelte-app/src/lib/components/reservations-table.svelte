@@ -46,14 +46,10 @@
 						<span class="text-xs text-gray-600">UTC</span>
 					</td>
 					<td>
-						<div class="flex flex-wrap gap-1">
-							{reservation.bands.join(', ')}
-						</div>
+						{reservation.bands.join(', ')}
 					</td>
 					<td>
-						<div class="flex flex-wrap gap-1">
-							{reservation.modes.join(', ')}
-						</div>
+						{reservation.modes.join(', ')}
 					</td>
 					<td>
 						{#if reservation.startDateTime < new Date()}
@@ -66,6 +62,10 @@
 					<td>
 						<a href="/reservation/{reservation._id}" class="btn btn-sm">Več</a>
 					</td>
+				</tr>
+			{:else}
+				<tr>
+					<td colspan="5" class="opacity-80 italic text-center">Ni rezervacij</td>
 				</tr>
 			{/each}
 		</tbody>

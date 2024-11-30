@@ -29,7 +29,7 @@
 			</div>
 
 			{#if $userStore?.roles.includes(Role.Admin)}
-				<a href="/admin/events/{event._id}" class="btn btn-warning btn-sm"> Uredi </a>
+				<a href="/admin/events/{event._id}" class="btn btn-warning btn-sm">Uredi</a>
 			{/if}
 		</div>
 
@@ -65,7 +65,7 @@
 		</div>
 	{:else if !$userStore}
 		<div>
-			<a href="/login?redirect=/event/{event._id}" class="btn"> Prijavi se za rezervacijo </a>
+			<a href="/login?redirect=/event/{event._id}" class="btn">Prijavi se za rezervacijo</a>
 		</div>
 	{:else}
 		<div class="alert">Žal nimate dovoljenja za rezervacijo tega dogodka</div>

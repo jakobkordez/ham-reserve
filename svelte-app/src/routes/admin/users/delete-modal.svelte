@@ -11,21 +11,20 @@
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">Izbriši uporabnika</h3>
 		<p class="py-4">
-			Ali si prepričan, da želiš izbrisati uporabnika &quot;<strong>{deleteUser?.username}</strong
-			>&quot;?
+			Ali si prepričan, da želiš izbrisati uporabnika "<strong>{deleteUser?.username}</strong>"?
 		</p>
 		<div class="modal-action">
 			<button
 				type="button"
 				class="btn btn-error"
 				onclick={async () => {
+					deleteUser = undefined;
 					const token = await getAccessToken();
 					if (!token) return;
 					apiFunctions
 						.deleteUser(token, deleteUser!._id)
 						.then(() => {
 							invalidateAll();
-							deleteUser = undefined;
 						})
 						.catch((error) => {
 							console.error(error);

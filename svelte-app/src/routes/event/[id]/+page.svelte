@@ -13,7 +13,7 @@
 		{#if !event}
 			<div class="flex flex-col items-center gap-6">
 				<h1 class="text-2xl font-medium">404 - Dogodek ne obstaja</h1>
-				<a href="/" class="btn btn-primary"> Nazaj na domačo stran </a>
+				<a href="/" class="btn btn-primary">Nazaj na domačo stran</a>
 			</div>
 		{:else}
 			<EventComponent {event} />

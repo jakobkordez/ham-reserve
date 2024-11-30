@@ -23,7 +23,7 @@
 					<div>Phone: {user.phone ?? '/'}</div>
 				</div>
 			</div>
-			<a href="/profile/edit" class="btn btn-primary btn-sm self-start"> Uredi profil </a>
+			<a href="/profile/edit" class="btn btn-primary btn-sm self-start">Uredi profil</a>
 		</div>
 
 		<div>

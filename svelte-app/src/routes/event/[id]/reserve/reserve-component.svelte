@@ -214,10 +214,10 @@
 
 			<div class="modal-action">
 				<form method="dialog">
-					<button class="btn" onclick={() => (modalOpen = false)}> Prekliči </button>
+					<button class="btn" onclick={() => (modalOpen = false)}>Prekliči</button>
 				</form>
 				<form method="dialog">
-					<button class="btn btn-primary" onclick={submit}> Potrdi </button>
+					<button class="btn btn-primary" onclick={submit}>Potrdi</button>
 				</form>
 			</div>
 		</div>

@@ -25,7 +25,7 @@
 			<div class="flex flex-col gap-4">
 				<a href="/event/{event._id}" class="link flex items-center gap-2">
 					<Fa icon={faArrowLeft} />
-					<span> Nazaj na dogodek </span>
+					<span>Nazaj na dogodek</span>
 				</a>
 
 				<h1 class="font-callsign text-3xl">{event.callsign}</h1>

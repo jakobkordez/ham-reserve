@@ -9,7 +9,7 @@
 </script>
 
 <div class="flex h-16 select-none px-4 justify-between bg-neutral text-neutral-content">
-	<a href="/" class="my-auto flex-1 text-xl font-semibold"> Ham Reserve </a>
+	<a href="/" class="my-auto flex-1 text-xl font-semibold">Ham Reserve</a>
 
 	<div class="flex flex-1 justify-end items-center">
 		<!-- <ThemeToggle /> -->
@@ -56,7 +56,7 @@
 				</div>
 			</div>
 		{:else}
-			<a href="/login" class="btn btn-sm btn-ghost"> Prijava </a>
+			<a href="/login" class="btn btn-sm btn-ghost">Prijava</a>
 		{/if}
 	</div>
 </div>

@@ -86,7 +86,7 @@
 								{/if}
 							</td>
 							<td>
-								<a href="/reservation/{reservation._id}" class="btn btn-sm"> Več </a>
+								<a href="/reservation/{reservation._id}" class="btn btn-sm">Več</a>
 							</td>
 						</tr>
 					{/each}

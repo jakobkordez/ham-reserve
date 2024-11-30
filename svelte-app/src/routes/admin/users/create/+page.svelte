@@ -106,6 +106,6 @@
 			</div>
 		{/if}
 
-		<button class="btn btn-primary" onclick={submit}> Ustvari </button>
+		<button class="btn btn-primary" onclick={submit}>Ustvari</button>
 	</div>
 </div>

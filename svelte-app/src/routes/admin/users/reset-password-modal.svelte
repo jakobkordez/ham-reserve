@@ -3,6 +3,7 @@
 	import { apiFunctions } from '$lib/api';
 	import type { User } from '$lib/interfaces/user.interface';
 	import { getAccessToken } from '$lib/stores/auth-store';
+	import { tick } from 'svelte';
 	import PasswordField from './password-field.svelte';
 
 	let { user = $bindable() }: { user: User | undefined } = $props();
@@ -14,7 +15,7 @@
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">Ponastavi geslo</h3>
 		<p class="py-4">
-			Ponastavi geslo za uporabnika &quot;<strong>{user?.username}</strong>&quot;
+			Ponastavi geslo za uporabnika "<strong>{user?.username}</strong>"
 		</p>
 		<PasswordField bind:value={password} />
 		<div class="modal-action">
@@ -29,7 +30,6 @@
 						.then(() => {
 							user = undefined;
 							password = '';
-							invalidateAll();
 						})
 						.catch((error) => {
 							console.error(error);

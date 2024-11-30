@@ -40,9 +40,7 @@
 			{/if}
 		</div>
 
-		<div class="flex gap-4">
-			<a href="/event/{event._id}" class="btn btn-primary">Na stran dogodka</a>
-		</div>
+		<a href="/event/{event._id}" class="btn btn-primary mr-auto">Na stran dogodka</a>
 
 		<AccessComponent {event} />
 
