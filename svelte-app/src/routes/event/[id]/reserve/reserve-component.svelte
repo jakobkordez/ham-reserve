@@ -11,6 +11,7 @@
 	import ModeSelector from './mode-selector.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { getAccessToken } from '$lib/stores/auth-store';
+	import { clampDate } from '..';
 
 	function floorHour(date: number) {
 		return new Date(Math.floor(date / hourInMs) * hourInMs);
@@ -36,8 +37,8 @@
 	let availableBands = $state<Set<Band>>(new Set(COMMON_BANDS));
 	let availableModes = $state<Set<Mode>>(new Set(COMMON_MODES));
 
-	let startDT = $state<Date>(floorHour(Date.now()));
-	let endDT = $state<Date>(floorHour(Date.now() + hourInMs));
+	let startDT = $state<Date>(clampDate(floorHour(Date.now()), event));
+	let endDT = $state<Date>(clampDate(floorHour(Date.now() + hourInMs), event));
 	let bands = $state<Set<Band>>(new Set());
 	let modes = $state<Set<Mode>>(new Set());
 	let error = $state<string[]>();

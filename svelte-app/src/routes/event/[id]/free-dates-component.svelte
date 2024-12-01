@@ -70,8 +70,7 @@
 					onclick={() => {
 						let d = new Date(date);
 						d.setDate(d.getDate() - 1);
-						clampDate(d, event);
-						date = d.toISOString().slice(0, 10);
+						date = clampDate(d, event).toISOString().slice(0, 10);
 					}}
 				>
 					<Fa icon={faChevronLeft} />
@@ -81,8 +80,7 @@
 					onclick={() => {
 						let d = new Date(date);
 						d.setDate(d.getDate() + 1);
-						clampDate(d, event);
-						date = d.toISOString().slice(0, 10);
+						date = clampDate(d, event).toISOString().slice(0, 10);
 					}}
 				>
 					<Fa icon={faChevronRight} />
