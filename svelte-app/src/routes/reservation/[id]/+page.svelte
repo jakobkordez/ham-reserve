@@ -11,6 +11,10 @@
 	import DownloadButton from './download-button.svelte';
 	import LogSummary from './log-summary.svelte';
 	import UploadLog from './upload-log.svelte';
+	import { userStore } from '$lib/stores/user-store';
+	import { Role } from '$lib/enums/role.enum';
+	import { getAccessToken } from '$lib/stores/auth-store';
+	import { apiFunctions } from '$lib/api';
 
 	const { data }: { data: PageData } = $props();
 
@@ -23,10 +27,29 @@
 	{:then [reservation, event]}
 		<div class="flex flex-col gap-10">
 			<div class="flex flex-col gap-4">
-				<a href="/event/{event._id}" class="link flex items-center gap-2">
-					<Fa icon={faArrowLeft} />
-					<span>Nazaj na dogodek</span>
-				</a>
+				<div class="flex items-center justify-between flex-wrap">
+					<a href="/event/{event._id}" class="link flex items-center gap-2">
+						<Fa icon={faArrowLeft} />
+						<span>Nazaj na dogodek</span>
+					</a>
+
+					{#if $userStore?.roles.includes(Role.Admin)}
+						<a href="/admin/events/{event._id}" class="btn btn-warning btn-sm">Nazaj na dogodek</a>
+
+						<button
+							onclick={() => {
+								if (!confirm('Ali ste prepričani, da želite izbrisati rezervacijo?')) return;
+								getAccessToken().then((token) => {
+									if (!token) return;
+									apiFunctions.deleteReservation(token, reservation._id).then(() => {
+										window.location.href = `/event/${event._id}`;
+									});
+								});
+							}}
+							class="btn btn-error btn-sm">Izbriši</button
+						>
+					{/if}
+				</div>
 
 				<h1 class="font-callsign text-3xl">{event.callsign}</h1>
 
