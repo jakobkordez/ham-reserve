@@ -4,12 +4,17 @@
 	import { userStore } from '$lib/stores/user-store';
 	import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
+	import Clock from './clock.svelte';
 
 	let userDropOpen = $state(false);
 </script>
 
-<div class="flex h-16 select-none px-4 justify-between bg-neutral text-neutral-content">
+<div
+	class="flex h-16 select-none px-4 justify-between bg-neutral text-neutral-content items-center"
+>
 	<a href="/" class="my-auto flex-1 text-xl font-semibold">Ham Reserve</a>
+
+	<Clock />
 
 	<div class="flex flex-1 justify-end items-center">
 		<!-- <ThemeToggle /> -->

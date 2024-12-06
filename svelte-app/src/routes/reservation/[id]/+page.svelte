@@ -15,10 +15,13 @@
 	import { Role } from '$lib/enums/role.enum';
 	import { getAccessToken } from '$lib/stores/auth-store';
 	import { apiFunctions } from '$lib/api';
+	import ProgressBar from '$lib/components/progress-bar.svelte';
+	import { createTimeState } from '$lib/stores/time-state.svelte';
+	import Countdown from '$lib/components/countdown.svelte';
 
 	const { data }: { data: PageData } = $props();
 
-	const now = new Date();
+	const now = createTimeState(10_000);
 </script>
 
 <div class="container py-10">
@@ -34,7 +37,9 @@
 					</a>
 
 					{#if $userStore?.roles.includes(Role.Admin)}
-						<a href="/admin/events/{event._id}" class="btn btn-warning btn-sm">Nazaj na dogodek</a>
+						<a href="/admin/events/{event._id}" class="btn btn-warning btn-sm btn-outline">
+							Nazaj na dogodek
+						</a>
 
 						<button
 							onclick={() => {
@@ -46,8 +51,10 @@
 									});
 								});
 							}}
-							class="btn btn-error btn-sm">Izbriši</button
+							class="btn btn-error btn-sm"
 						>
+							Izbriši
+						</button>
 					{/if}
 				</div>
 
@@ -61,9 +68,19 @@
 					<div>Frekvenčni pasovi: {reservation.bands.join(', ')}</div>
 					<div>Način dela: {reservation.modes.join(', ')}</div>
 				</div>
+
+				<ProgressBar start={reservation.startDateTime} end={reservation.endDateTime} />
+				{#if reservation.startDateTime < now.time && reservation.endDateTime > now.time}
+					<div class="text-right">
+						Do konca:
+						<span class="font-semibold font-mono">
+							<Countdown time={reservation.endDateTime} />
+						</span>
+					</div>
+				{/if}
 			</div>
 
-			{#if reservation.startDateTime < now || reservation.logSummary}
+			{#if reservation.startDateTime < now.time || reservation.logSummary}
 				<div class="flex flex-col gap-6">
 					<div class="text-2xl">Radioamaterski dnevnik rezervacije</div>
 
@@ -86,6 +103,11 @@
 					<UploadLog {reservation} />
 				</div>
 			{/if}
+		</div>
+	{:catch}
+		<div class="text-center">
+			<div class="text-6xl font-mono font-light">404</div>
+			<div class="text-xl mt-2">Za to stran je potrebna prijava</div>
 		</div>
 	{/await}
 </div>

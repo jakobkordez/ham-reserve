@@ -10,6 +10,9 @@ export default {
 			container: {
 				center: true,
 				padding: '2rem'
+			},
+			fontFamily: {
+				mono: ['Roboto Mono', 'monospace']
 			}
 		}
 	},
