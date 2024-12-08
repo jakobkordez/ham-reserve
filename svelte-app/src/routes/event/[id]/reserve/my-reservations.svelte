@@ -8,7 +8,9 @@
 
 	const reservations = getAccessToken().then((token) => {
 		if (!token) return [];
-		return apiFunctions.getReservationsForSelf(token, { event: eventId });
+		return apiFunctions
+			.getReservationsForSelf(token, { event: eventId })
+			.then((res) => res.sort((a, b) => b.startDateTime.valueOf() - a.startDateTime.valueOf()));
 	});
 </script>
 
