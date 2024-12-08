@@ -55,22 +55,23 @@
 								<div class="text-sm opacity-80">Phone: {user.phone}</div>
 							</td>
 							<td>
-								<button class="btn btn-circle btn-ghost" onclick={() => (resetPassUser = user)}>
+								{#if user.roles.includes(Role.Admin)}
+									<Fa icon={faCrown} class="text-amber-500" />
+								{/if}
+							</td>
+							<td>
+								<button
+									class="btn btn-sm btn-circle btn-ghost {user.passwordResetRequired
+										? 'border-b border-red-400'
+										: ''}"
+									onclick={() => (resetPassUser = user)}
+								>
 									<Fa icon={faKey} />
 								</button>
 							</td>
 							<td>
-								<Fa
-									icon={faCrown}
-									class="h-5 w-5 leading-none {user.roles.includes(Role.Admin)
-										? 'text-amber-500'
-										: 'text-gray-400'}"
-								/>
-							</td>
-							<td>
 								<button
-									class="btn btn-circle btn-error btn-sm btn-outline h-14 w-14 border-0 {user._id ===
-									me?._id
+									class="btn btn-circle btn-error btn-sm btn-outline border-0 {user._id === me?._id
 										? 'invisible'
 										: ''}"
 									onclick={() => (deleteUser = user)}

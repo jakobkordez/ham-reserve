@@ -50,7 +50,7 @@
 	bind:this={aRef}
 	href={url}
 	class="btn btn-sm {url ? '' : 'hidden'}"
-	download="{event.callsign}_{reservation._id}.adi"
+	download="{event.callsign}_{reservation.user.substring(18)}_{reservation._id.substring(18)}.adi"
 >
 	{@render buttonContent()}
 </a>
