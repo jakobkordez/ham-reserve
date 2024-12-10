@@ -1,29 +1,29 @@
 <script lang="ts">
 	import type { Reservation } from '$lib/interfaces/reservation.interface';
-	import { dayInMs, getUTCDateString, getUTCTimeString } from '$lib/util/date.util';
-	import { faFileCircleCheck, faFileCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+	import { getUTCDateString, getUTCTimeString } from '$lib/util/date.util';
+	import {
+		faCaretLeft,
+		faCaretRight,
+		faFileCircleCheck,
+		faFileCircleExclamation
+	} from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
-	let { reservations }: { reservations: Reservation[] } = $props();
+	let { reservations, pageSize = 5 }: { reservations: Reservation[]; pageSize: number } = $props();
 
-	function formatDateTime(reservation: Reservation) {
-		let ret =
-			getUTCDateString(reservation.startDateTime) +
-			' ' +
-			getUTCTimeString(reservation.startDateTime) +
-			' - ';
-		if (
-			Math.floor(reservation.endDateTime.valueOf() / dayInMs) !==
-			Math.floor(reservation.startDateTime.valueOf() / dayInMs)
-		) {
-			ret += getUTCDateString(reservation.endDateTime) + ' ';
-		}
-		return ret + getUTCTimeString(reservation.endDateTime);
+	let page = $state(0);
+
+	function formatDateTime(r: Reservation) {
+		const d = getUTCDateString;
+		const t = getUTCTimeString;
+		let ret = d(r.startDateTime) + ' ' + t(r.startDateTime) + ' - ';
+		if (d(r.endDateTime) !== d(r.startDateTime)) ret += d(r.endDateTime) + ' ';
+		return ret + t(r.endDateTime);
 	}
 </script>
 
 <div class="overflow-x-auto">
-	<table class="table">
+	<table class="table border-b border-base-200">
 		<colgroup>
 			<col />
 			<col />
@@ -39,7 +39,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each reservations as reservation}
+			{#each reservations.slice(page * pageSize, (page + 1) * pageSize) as reservation}
 				<tr>
 					<td>
 						{formatDateTime(reservation)}
@@ -63,11 +63,27 @@
 						<a href="/reservation/{reservation._id}" class="btn btn-sm">Več</a>
 					</td>
 				</tr>
-			{:else}
+			{/each}
+			{#each { length: Math.max(0, (page + 1) * pageSize - reservations.length) }}
 				<tr>
-					<td colspan="5" class="opacity-80 italic text-center">Ni rezervacij</td>
+					<td colspan="5">
+						<button class="btn btn-sm invisible">Več</button>
+					</td>
 				</tr>
 			{/each}
 		</tbody>
 	</table>
+	<div class="flex justify-center items-center gap-4 mt-4">
+		<button class="btn btn-sm btn-primary" disabled={page == 0} onclick={() => (page -= 1)}>
+			<Fa icon={faCaretLeft} />
+		</button>
+		<div>{page + 1}</div>
+		<button
+			class="btn btn-sm btn-primary"
+			disabled={(page + 1) * pageSize >= reservations.length}
+			onclick={() => (page += 1)}
+		>
+			<Fa icon={faCaretRight} />
+		</button>
+	</div>
 </div>

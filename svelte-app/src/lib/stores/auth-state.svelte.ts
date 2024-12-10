@@ -86,8 +86,10 @@ function createAuthState() {
 			} catch (e) {
 				console.error(e);
 			}
-			authState = { accessToken: null, refreshToken: null };
-			tick().then(refreshUser);
+			tick().then(() => {
+				authState = { accessToken: null, refreshToken: null };
+				user = null;
+			});
 		}
 	};
 }

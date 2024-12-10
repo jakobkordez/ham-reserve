@@ -48,12 +48,12 @@
 					{#each users as user}
 						<tr>
 							<td class="my-auto flex-1">
-								<div class="text-xl">
+								<div class="text-lg">
 									<span class="font-callsign">{user.username}</span> -{' '}
 									{user.name}
 								</div>
 								{' '}
-								<div class="text-xs opacity-80">{user._id}</div>
+								<div class="text-xs opacity-70">{user._id}</div>
 							</td>
 							<td class="my-auto flex-1">
 								<div class="text-sm opacity-80">Email: {user.email}</div>
