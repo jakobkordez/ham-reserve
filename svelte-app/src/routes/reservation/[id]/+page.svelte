@@ -11,9 +11,8 @@
 	import DownloadButton from './download-button.svelte';
 	import LogSummary from './log-summary.svelte';
 	import UploadLog from './upload-log.svelte';
-	import { userStore } from '$lib/stores/user-store';
 	import { Role } from '$lib/enums/role.enum';
-	import { getAccessToken } from '$lib/stores/auth-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import { apiFunctions } from '$lib/api';
 	import ProgressBar from '$lib/components/progress-bar.svelte';
 	import { createTimeState } from '$lib/stores/time-state.svelte';
@@ -21,11 +20,19 @@
 
 	const { data }: { data: PageData } = $props();
 
+	const auth = getAuthContext();
+
+	const promise = auth.getAccessToken().then((token) => {
+		if (!token) throw new Error('Unauthenticated');
+		const res = apiFunctions.getReservation(token, data.id);
+		return Promise.all([res, res.then((r) => apiFunctions.getEvent(r.event))]);
+	});
+
 	const now = createTimeState(10_000);
 </script>
 
 <div class="container py-10">
-	{#await Promise.all([data.reservation, data.event])}
+	{#await promise}
 		<Loading />
 	{:then [reservation, event]}
 		<div class="flex flex-col gap-10">
@@ -36,7 +43,7 @@
 						<span>Nazaj na dogodek</span>
 					</a>
 
-					{#if $userStore?.roles.includes(Role.Admin)}
+					{#if auth.user?.roles.includes(Role.Admin)}
 						<a href="/admin/events/{event._id}" class="btn btn-warning btn-sm btn-outline">
 							Nazaj na dogodek
 						</a>
@@ -44,7 +51,7 @@
 						<button
 							onclick={() => {
 								if (!confirm('Ali ste prepričani, da želite izbrisati rezervacijo?')) return;
-								getAccessToken().then((token) => {
+								auth.getAccessToken().then((token) => {
 									if (!token) return;
 									apiFunctions.deleteReservation(token, reservation._id).then(() => {
 										window.location.href = `/event/${event._id}`;

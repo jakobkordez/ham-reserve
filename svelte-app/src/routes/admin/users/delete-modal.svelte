@@ -2,9 +2,11 @@
 	import { invalidateAll } from '$app/navigation';
 	import { apiFunctions } from '$lib/api';
 	import type { User } from '$lib/interfaces/user.interface';
-	import { getAccessToken } from '$lib/stores/auth-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 
 	let { deleteUser = $bindable() }: { deleteUser: User | undefined } = $props();
+
+	const auth = getAuthContext();
 </script>
 
 <dialog class="modal {deleteUser ? 'modal-open' : ''}">
@@ -19,7 +21,7 @@
 				class="btn btn-error"
 				onclick={async () => {
 					deleteUser = undefined;
-					const token = await getAccessToken();
+					const token = await auth.getAccessToken();
 					if (!token) return;
 					apiFunctions
 						.deleteUser(token, deleteUser!._id)

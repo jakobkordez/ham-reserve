@@ -2,11 +2,13 @@
 	import { apiFunctions } from '$lib/api';
 	import Loading from '$lib/components/loading.svelte';
 	import ReservationsTable from '$lib/components/reservations-table.svelte';
-	import { getAccessToken } from '$lib/stores/auth-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 
 	const { eventId }: { eventId: string } = $props();
 
-	const reservations = getAccessToken().then((token) => {
+	const auth = getAuthContext();
+
+	const reservations = auth.getAccessToken().then((token) => {
 		if (!token) return [];
 		return apiFunctions
 			.getReservationsForSelf(token, { event: eventId })

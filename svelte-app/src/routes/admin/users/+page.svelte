@@ -4,17 +4,22 @@
 	import Loading from '$lib/components/loading.svelte';
 	import { Role } from '$lib/enums/role.enum';
 	import type { User } from '$lib/interfaces/user.interface';
-	import type { PageData } from './$types';
-	import { userStore } from '$lib/stores/user-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import DeleteModal from './delete-modal.svelte';
 	import ResetPasswordModal from './reset-password-modal.svelte';
+	import { apiFunctions } from '$lib/api';
 
-	const { data }: { data: PageData } = $props();
+	const auth = getAuthContext();
 
 	let deleteUser = $state<User>();
 	let resetPassUser = $state<User>();
 
-	let me = $derived($userStore);
+	let me = $derived(auth.user);
+
+	const usersP = auth.getAccessToken().then((token) => {
+		if (!token) return [];
+		return apiFunctions.getAllUsers(token);
+	});
 </script>
 
 <div>
@@ -27,7 +32,7 @@
 		</a>
 	</div>
 
-	{#await data.users}
+	{#await usersP}
 		<Loading />
 	{:then users}
 		<div class="overflow-x-auto">

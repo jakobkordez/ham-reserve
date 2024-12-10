@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { apiFunctions } from '$lib/api';
 	import type { Reservation } from '$lib/interfaces/reservation.interface';
-	import { getAccessToken } from '$lib/stores/auth-store';
-	import { userStore } from '$lib/stores/user-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 
 	const { reservation: res }: { reservation: Reservation } = $props();
+
+	const auth = getAuthContext();
 
 	let error = $state<string>();
 	let file = $state<File>();
@@ -16,7 +17,7 @@
 			return;
 		}
 
-		const token = await getAccessToken();
+		const token = await auth.getAccessToken();
 		if (!token) return;
 		apiFunctions
 			.uploadLog(token, res._id, file)
@@ -30,7 +31,7 @@
 	}
 </script>
 
-{#if $userStore?._id === res.user}
+{#if auth.user?._id === res.user}
 	<div class="form-control">
 		<div class="label">
 			{res.logSummary ? 'Ponovno oddaj' : 'Oddaj'} dnevnik

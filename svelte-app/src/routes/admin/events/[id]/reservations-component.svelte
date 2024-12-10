@@ -4,12 +4,14 @@
 	import type { Event } from '$lib/interfaces/event.interface';
 	import type { Reservation } from '$lib/interfaces/reservation.interface';
 	import type { User } from '$lib/interfaces/user.interface';
-	import { getAccessToken } from '$lib/stores/auth-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import { dayInMs, getUTCDateString, getUTCTimeString } from '$lib/util/date.util';
 	import { faFileCircleCheck, faFileCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	const { event }: { event: Event } = $props();
+
+	const auth = getAuthContext();
 
 	let reservations = $state<Reservation[]>();
 	let users = $state<Map<string, User>>();
@@ -20,7 +22,7 @@
 			.then((res) => {
 				reservations = res.sort((a, b) => b.startDateTime.valueOf() - a.startDateTime.valueOf());
 				const u = new Set<string>(res.map((r) => r.user));
-				getAccessToken().then((token) => {
+				auth.getAccessToken().then((token) => {
 					if (!token) return;
 					apiFunctions
 						.getManyUsers(token, Array.from(u))

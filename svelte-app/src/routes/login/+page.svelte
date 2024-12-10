@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { apiFunctions } from '$lib/api';
 	import { uppercaseInput } from '$lib/input-helpers';
-	import { authStore, isAuthValid } from '$lib/stores/auth-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 
 	const redirect = $page.url.searchParams.get('redirect');
 
+	const auth = getAuthContext();
+
 	$effect(() => {
-		isAuthValid().then((r) => {
-			if (r) goto(redirect || '/');
-		});
+		if (auth.user) goto(redirect || '/');
 	});
 
 	let username = $state('');
@@ -21,16 +20,9 @@
 	function login() {
 		error = undefined;
 
-		apiFunctions
-			.login(username, password)
-			.then((res) => {
-				authStore.set(res);
-				goto(redirect || '/');
-			})
-			.catch((e) => {
-				console.error(e);
-				error = 'Napačno uporabniško ime ali geslo';
-			});
+		auth.login(username, password).then((res) => {
+			if (!res) error = 'Napačno uporabniško ime ali geslo';
+		});
 	}
 </script>
 

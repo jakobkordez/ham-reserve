@@ -1,12 +1,13 @@
 <script>
 	import { Role } from '$lib/enums/role.enum';
-	import { logout } from '$lib/stores/auth-store';
-	import { userStore } from '$lib/stores/user-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 	import Clock from './clock.svelte';
 
 	let userDropOpen = $state(false);
+
+	const auth = getAuthContext();
 </script>
 
 <div
@@ -20,11 +21,11 @@
 		<!-- <ThemeToggle /> -->
 
 		<!-- User -->
-		{#if $userStore}
+		{#if auth.user}
 			<div class="relative">
 				<button class="btn btn-ghost" onclick={() => (userDropOpen = !userDropOpen)}>
 					<Fa icon={faUserCircle} class="h-5 w-5" />
-					<span>{$userStore.username}</span>
+					<span>{auth.user.username}</span>
 				</button>
 
 				<div class="absolute right-2 top-full z-[1] pt-1 {userDropOpen ? '' : 'hidden'}">
@@ -40,7 +41,7 @@
 						<li>
 							<a href="/profile" onclick={() => (userDropOpen = false)}>Profil</a>
 						</li>
-						{#if $userStore.roles.includes(Role.Admin)}
+						{#if auth.user.roles.includes(Role.Admin)}
 							<li>
 								<a href="/admin" class="btn-warning" onclick={() => (userDropOpen = false)}>
 									Admin panel
@@ -50,8 +51,8 @@
 						<li>
 							<button
 								onclick={() => {
-									logout();
-									window.location.reload();
+									auth.logout();
+									userDropOpen = false;
 								}}
 							>
 								Odjava

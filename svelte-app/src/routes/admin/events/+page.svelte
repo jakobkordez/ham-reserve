@@ -2,11 +2,22 @@
 	import { faAdd } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 	import { getUTCString } from '$lib/util/date.util';
-	import type { PageData } from './$types';
 	import PrivateTag from '$lib/components/private-tag.svelte';
 	import Loading from '$lib/components/loading.svelte';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
+	import { apiFunctions } from '$lib/api';
 
-	export let data: PageData;
+	const auth = getAuthContext();
+
+	const eventsP = auth
+		.getAccessToken()
+		.then((token) => {
+			if (!token) return [];
+			return apiFunctions.getAllEvents(token);
+		})
+		.then((events) => {
+			return events.sort((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf());
+		});
 </script>
 
 <div>
@@ -19,7 +30,7 @@
 		</a>
 	</div>
 
-	{#await data.events}
+	{#await eventsP}
 		<Loading />
 	{:then events}
 		<div class="overflow-x-auto">

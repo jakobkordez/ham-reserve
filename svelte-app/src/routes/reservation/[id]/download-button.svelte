@@ -2,12 +2,14 @@
 	import { apiFunctions } from '$lib/api';
 	import type { Event } from '$lib/interfaces/event.interface';
 	import type { Reservation } from '$lib/interfaces/reservation.interface';
-	import { getAccessToken } from '$lib/stores/auth-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import { faDownload } from '@fortawesome/free-solid-svg-icons';
 	import { tick } from 'svelte';
 	import Fa from 'svelte-fa';
 
 	const { event, reservation }: { event: Event; reservation: Reservation } = $props();
+
+	const auth = getAuthContext();
 
 	let aRef: HTMLAnchorElement;
 	let url = $state<string>();
@@ -24,7 +26,7 @@
 			return;
 		}
 
-		const token = await getAccessToken();
+		const token = await auth.getAccessToken();
 		if (!token) return;
 		apiFunctions
 			.getLog(token, reservation._id)

@@ -2,10 +2,12 @@
 	import { goto } from '$app/navigation';
 	import { apiFunctions } from '$lib/api';
 	import { uppercaseInput } from '$lib/input-helpers';
-	import { getAccessToken } from '$lib/stores/auth-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 	import PasswordField from '../password-field.svelte';
+
+	const auth = getAuthContext();
 
 	let username = $state('');
 	let password = $state('');
@@ -16,7 +18,7 @@
 
 	function submit() {
 		error = undefined;
-		getAccessToken().then((token) => {
+		auth.getAccessToken().then((token) => {
 			if (!token) return;
 			apiFunctions
 				.createUser(token, {

@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
 	import { apiFunctions } from '$lib/api';
 	import Loading from '$lib/components/loading.svelte';
 	import { uppercaseInput } from '$lib/input-helpers';
 	import type { Event } from '$lib/interfaces/event.interface';
 	import type { User } from '$lib/interfaces/user.interface';
-	import { getAccessToken } from '$lib/stores/auth-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import { faPlus, faRemove } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	const { event }: { event: Event } = $props();
+
+	const auth = getAuthContext();
 
 	let users = $state<User[]>();
 	let error = $state<string>();
@@ -17,7 +18,7 @@
 	let usernameInput = $state('');
 
 	$effect(() => {
-		getAccessToken().then((token) => {
+		auth.getAccessToken().then((token) => {
 			if (!token) return;
 			apiFunctions
 				.getManyUsers(token, event.access)
@@ -29,11 +30,11 @@
 	async function grantAccess() {
 		error = undefined;
 		try {
-			const token = await getAccessToken();
+			const token = await auth.getAccessToken();
 			if (!token) throw Error('Unauthenticated');
 			const user = await apiFunctions.findByUsername(token, usernameInput.toUpperCase());
 			await apiFunctions.grantEventAccess(token, event._id, user._id);
-			invalidateAll();
+			users?.push(user);
 			usernameInput = '';
 
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,10 +46,10 @@
 
 	async function revokeAccess(userId: string) {
 		try {
-			const token = await getAccessToken();
+			const token = await auth.getAccessToken();
 			if (!token) throw Error('Unauthenticated');
 			await apiFunctions.revokeEventAccess(token, event._id, userId);
-			invalidateAll();
+			users = users?.filter((u) => u._id !== userId);
 		} catch (err) {
 			console.error(err);
 		}

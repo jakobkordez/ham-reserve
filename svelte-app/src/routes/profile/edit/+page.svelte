@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { apiFunctions } from '$lib/api';
-	import { getAccessToken } from '$lib/stores/auth-store';
-	import { refreshUser, userStore } from '$lib/stores/user-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import { faCircleCheck, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
-	const user = $derived($userStore);
+	const auth = getAuthContext();
+	const user = $derived(auth.user);
 
 	let name = $state('');
 	let email = $state('');
@@ -28,7 +28,7 @@
 			return;
 		}
 
-		const token = await getAccessToken();
+		const token = await auth.getAccessToken();
 		if (!token) return;
 		apiFunctions
 			.updateSelf(token, {
@@ -38,7 +38,7 @@
 			})
 			.then(() => {
 				saved = true;
-				refreshUser();
+				auth.refreshUser();
 			})
 			.catch((e) => {
 				console.error(e);
@@ -55,7 +55,7 @@
 			return;
 		}
 
-		const token = await getAccessToken();
+		const token = await auth.getAccessToken();
 		if (!token) return;
 		apiFunctions
 			.updateSelfPassword(token, oldPassword, newPassword)

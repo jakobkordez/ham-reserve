@@ -10,8 +10,10 @@
 	import BandSelector from './band-selector.svelte';
 	import ModeSelector from './mode-selector.svelte';
 	import { invalidateAll } from '$app/navigation';
-	import { getAccessToken } from '$lib/stores/auth-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import { clampDate } from '..';
+
+	const auth = getAuthContext();
 
 	function floorHour(date: number) {
 		return new Date(Math.floor(date / hourInMs) * hourInMs);
@@ -92,7 +94,7 @@
 
 	async function submit() {
 		error = undefined;
-		const token = await getAccessToken();
+		const token = await auth.getAccessToken();
 		if (!token) {
 			error = ['Napaka'];
 			return;

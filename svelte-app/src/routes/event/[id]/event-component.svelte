@@ -6,13 +6,15 @@
 	import Fa from 'svelte-fa';
 	import FreeDatesComponent from './free-dates-component.svelte';
 	import Time from './time.svelte';
-	import { userStore } from '$lib/stores/user-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import ReserveComponent from './reserve/reserve-component.svelte';
 	import MyReservations from './reserve/my-reservations.svelte';
 	import { Role } from '$lib/enums/role.enum';
 	import PrivateTag from '$lib/components/private-tag.svelte';
 
 	const { event }: { event: Event } = $props();
+
+	const auth = getAuthContext();
 </script>
 
 <div class="flex flex-col gap-8">
@@ -28,7 +30,7 @@
 				{/if}
 			</div>
 
-			{#if $userStore?.roles.includes(Role.Admin)}
+			{#if auth.user?.roles.includes(Role.Admin)}
 				<a href="/admin/events/{event._id}" class="btn btn-warning btn-sm">Uredi</a>
 			{/if}
 		</div>
@@ -49,7 +51,7 @@
 		<FreeDatesComponent {event} />
 	</div>
 
-	{#if $userStore && event.access.includes($userStore._id)}
+	{#if auth.user && event.access.includes(auth.user._id)}
 		<div>
 			<h2 class="mb-4 text-2xl">Moje rezervacije</h2>
 			<MyReservations eventId={event._id} />
@@ -63,7 +65,7 @@
 			</div>
 			<ReserveComponent {event} />
 		</div>
-	{:else if !$userStore}
+	{:else if !auth.user}
 		<div>
 			<a href="/login?redirect=/event/{event._id}" class="btn">Prijavi se za rezervacijo</a>
 		</div>

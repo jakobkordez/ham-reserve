@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
 	import { apiFunctions } from '$lib/api';
 	import type { User } from '$lib/interfaces/user.interface';
-	import { getAccessToken } from '$lib/stores/auth-store';
-	import { tick } from 'svelte';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 	import PasswordField from './password-field.svelte';
 
 	let { user = $bindable() }: { user: User | undefined } = $props();
+
+	const auth = getAuthContext();
 
 	let password = $state('');
 </script>
@@ -23,7 +23,7 @@
 				type="button"
 				class="btn btn-primary"
 				onclick={async () => {
-					const token = await getAccessToken();
+					const token = await auth.getAccessToken();
 					if (!token) return;
 					apiFunctions
 						.updateOtherPassword(token, user!._id, password)

@@ -1,14 +1,25 @@
 <script lang="ts">
+	import { apiFunctions } from '$lib/api';
 	import Loading from '$lib/components/loading.svelte';
 	import ReservationsTable from '$lib/components/reservations-table.svelte';
 	import ResetPasswordAlert from '$lib/components/reset-password-alert.svelte';
-	import type { PageData } from './$types';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
 
-	const { data }: { data: PageData } = $props();
+	const auth = getAuthContext();
+
+	const promise = auth.getAccessToken().then((token) => {
+		if (!token) throw Error('Unauthenticated');
+		return Promise.all([
+			apiFunctions.getMe(token),
+			apiFunctions.getReservationsForSelf(token).then((res) => {
+				return res.sort((a, b) => b.startDateTime.valueOf() - a.startDateTime.valueOf());
+			})
+		]);
+	});
 </script>
 
 <div class="container flex flex-col gap-8 py-10">
-	{#await Promise.all([data.user, data.reservations])}
+	{#await promise}
 		<Loading />
 	{:then [user, reservations]}
 		<ResetPasswordAlert />

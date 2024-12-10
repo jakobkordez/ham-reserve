@@ -2,7 +2,9 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { Role } from '$lib/enums/role.enum';
-	import { userStore } from '$lib/stores/user-store';
+	import { getAuthContext } from '$lib/stores/auth-state.svelte';
+
+	const auth = getAuthContext();
 
 	const pathname = $derived($page.url.pathname);
 
@@ -18,8 +20,8 @@
 	];
 
 	$effect(() => {
-		if ($userStore === undefined) return;
-		if (!$userStore?.roles.includes(Role.Admin)) goto('/');
+		if (auth.user === undefined) return;
+		if (!auth.user?.roles.includes(Role.Admin)) goto('/');
 	});
 
 	let { children } = $props();
