@@ -1,17 +1,15 @@
 <script lang="ts">
 	import type { Reservation } from '$lib/interfaces/reservation.interface';
+	import { createTimeState } from '$lib/stores/time-state.svelte';
 	import { getUTCDateString, getUTCTimeString } from '$lib/util/date.util';
-	import {
-		faCaretLeft,
-		faCaretRight,
-		faFileCircleCheck,
-		faFileCircleExclamation
-	} from '@fortawesome/free-solid-svg-icons';
+	import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
 
 	let { reservations, pageSize = 5 }: { reservations: Reservation[]; pageSize: number } = $props();
 
 	let page = $state(0);
+
+	const now = createTimeState(10_000);
 
 	function formatDateTime(r: Reservation) {
 		const d = getUTCDateString;
@@ -28,8 +26,7 @@
 			<col />
 			<col />
 			<col />
-			<col />
-			<col />
+			<col width="0" />
 		</colgroup>
 		<thead>
 			<tr>
@@ -51,16 +48,25 @@
 					<td>
 						{reservation.modes.join(', ')}
 					</td>
-					<td>
+					<!-- <td>
 						{#if reservation.startDateTime < new Date()}
 							<Fa
 								icon={reservation.logSummary ? faFileCircleCheck : faFileCircleExclamation}
 								class="h-5 w-5 {reservation.logSummary ? 'text-green-400' : 'text-orange-300'}"
 							/>
 						{/if}
-					</td>
+					</td> -->
 					<td>
-						<a href="/reservation/{reservation._id}" class="btn btn-sm">Več</a>
+						<a
+							href="/reservation/{reservation._id}"
+							class="btn btn-sm border-2 {reservation.startDateTime < now.time
+								? reservation.logSummary
+									? 'border-green-400'
+									: 'btn-warning'
+								: ''}"
+						>
+							Več
+						</a>
 					</td>
 				</tr>
 			{/each}
